@@ -30,7 +30,11 @@ function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, 'electron-vite.svg'),
     height: 800,
-    width: 1280,
+    width: 1440,
+      // frame: false,
+    backgroundColor:"rgb(26,27,28)",
+     roundedCorners: true, // enables rounded corners (macOS only)
+  transparent: false,
     webPreferences: {
       preload: path.join(__dirname, 'preload.mjs'),
     },
