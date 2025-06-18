@@ -1,5 +1,5 @@
-@import "tailwindcss";
 @import url("https://fonts.googleapis.com/css2?family=Manrope:wght@200..800&display=swap");
+@import "tailwindcss";
 
 body {
   font-family: "Manrope", sans-serif;
@@ -26,10 +26,10 @@ body {
 }
 
 @theme {
-  --color-primary-red: "#E64954";
-  --color-text-primary: "#9E9DA2";
-  --color-stroke-primary: "#27262A";
-  --color-bg-primary: "#18181A";
-  --color-primary-blue: "#40A2DC";
-  --color-bg-secondary: "#5D5C5E";
+  --color-primary-red: #d63f3d;
+  --color-text-primary: #9e9da2;
+  --color-stroke-primary: #27262a;
+  --color-primary-bg: #18181a;
+  --color-primary-blue: #18181a;
+  --color-secondary-bg: #282529;
 }

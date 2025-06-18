@@ -16,7 +16,7 @@ function createWindow() {
     height: 800,
     width: 1440,
     // frame: false,
-    backgroundColor: "rgb(26,27,28)",
+    backgroundColor: "#18181a",
     roundedCorners: true,
     // enables rounded corners (macOS only)
     transparent: false,
