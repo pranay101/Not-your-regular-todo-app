@@ -1,14 +1,14 @@
-import { format } from "date-fns";
+import moment from "moment";
 
 interface CalendarProps {
   className?: string;
 }
 
 const Calendar: React.FC<CalendarProps> = ({ className }) => {
-  const today = new Date();
-  const day = format(today, "d");
-  const month = format(today, "MMM");
-  const year = format(today, "yyyy");
+  const today = moment();
+  const day = today.format("D"); // e.g., 14
+  const month = today.format("MMM"); // e.g., Jun
+  const year = today.format("YYYY"); // e.g., 2025
 
   return (
     <div
