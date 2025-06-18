@@ -1,17 +1,18 @@
 import "./App.css";
-import { ActivityGraph, Calendar } from "./components";
+import { ActivityGraph, Calendar, Position } from "./components";
 
 function App() {
   return (
     <main className="grid grid-cols-5 gap-6 h-full p-6">
-      <section className="col-span-2 w-full overflow-x-auto">
+      <section className="col-span-2 w-full overflow-x-auto h-fit">
         <ActivityGraph />
-        <div className="grid grid-cols-5 gap-6 mt-4">
-          <Calendar className="col-span-2 bg-bg-secondary bg-gray-100" />
+        <div className="flex items-start gap-4 mt-4">
+          <Calendar className="w-52 bg-bg-secondary bg-gray-100" />
+          <Position />
         </div>
       </section>
-      <section className="bg-red-500 h-full w-full col-span-2"></section>
-      <section className="bg-red-500 h-full w-full col-span-1"></section>
+      {/* <section className="bg-red-500 h-full w-full col-span-2"></section>
+      <section className="bg-red-500 h-full w-full col-span-1"></section> */}
     </main>
   );
 }
