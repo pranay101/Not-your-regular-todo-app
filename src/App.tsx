@@ -1,5 +1,5 @@
 import "./App.css";
-import { ActivityGraph, Calendar, Position, WorkMode } from "./components";
+import { ActivityGraph, Calendar, PomodoroToday, Position, WorkMode } from "./components";
 
 function App() {
   return (
@@ -11,6 +11,7 @@ function App() {
           <Position />
           <WorkMode />
         </div>
+        <PomodoroToday totalTasks={10} completedTasks={7} />
       </section>
       {/* <section className="bg-red-500 h-full w-full col-span-2"></section>
       <section className="bg-red-500 h-full w-full col-span-1"></section> */}
