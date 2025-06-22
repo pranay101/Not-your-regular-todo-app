@@ -106,14 +106,14 @@ const Modal: React.FC<ModalProps> = ({
           <motion.div
             ref={modalRef}
             className={`relative bg-primary-bg border border-stroke-primary rounded-md shadow-2xl w-full ${sizeClasses[size]} ${className}`}
-            initial={{ opacity: 0, y: 10, scale: 0.98 }}
+            initial={{ opacity: 0, y: "100%", scale: 1 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 10, scale: 0.98 }}
+            exit={{ opacity: 0, y: "100%", scale: 1 }}
             transition={{
-              duration: 0.3,
+              duration: 0.4,
               type: "spring",
-              damping: 20,
-              stiffness: 300,
+              damping: 25,
+              stiffness: 200,
             }}
             onClick={(e) => e.stopPropagation()}
           >
