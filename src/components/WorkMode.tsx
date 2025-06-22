@@ -21,7 +21,7 @@ const WorkMode: React.FC<WorkModeProps> = ({ onModeChange }) => {
   };
 
   return (
-    <div className="w-[160px] h-36 bg-primary-bg border border-stroke-primary rounded-xl p-2 flex flex-col justify-between">
+    <div className="component-card w-[160px] h-36 bg-primary-bg border border-stroke-primary rounded-xl p-2 flex flex-col justify-between">
       <div className="flex items-center gap-2">
         <span className="rounded-full p-1 bg-secondary-bg">
           {isWorkMode ? (

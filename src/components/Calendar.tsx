@@ -12,7 +12,7 @@ const Calendar: React.FC<CalendarProps> = ({ className }) => {
 
   return (
     <div
-      className={`flex flex-col items-center rounded-lg border border-stroke-primary bg-primary-bg p-4 text-white shadow-lg ${
+      className={` component-card flex flex-col items-center rounded-lg border border-stroke-primary bg-primary-bg p-4 text-white shadow-lg ${
         className || ""
       }`}
     >

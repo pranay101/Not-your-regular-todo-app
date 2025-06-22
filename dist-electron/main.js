@@ -13,10 +13,11 @@ let win;
 function createWindow() {
   win = new BrowserWindow({
     icon: path.join(process.env.VITE_PUBLIC, "electron-vite.svg"),
-    height: 800,
+    height: 780,
+    maxHeight: 780,
     width: 1440,
     maxWidth: 1440,
-    // frame: false,
+    frame: false,
     backgroundColor: "#18181a",
     roundedCorners: true,
     // enables rounded corners (macOS only)

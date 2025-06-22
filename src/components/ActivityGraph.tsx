@@ -43,7 +43,7 @@ const ActivityGraph = () => {
   const monthLabels = generateMonthLabels(STARTING_DAY, WEEKS);
   console.log(monthLabels);
   return (
-    <div className="bg-primary-bg border border-gray-800 rounded-xl p-2">
+    <div className="component-card bg-primary-bg border border-gray-800 rounded-xl p-2">
       <div className="flex items-center gap-2">
         <div className="w-6 h-6 rounded-full p-1 bg-secondary-bg">
           <ChartBarIcon className="fill-primary-red outline-none border-none" />{" "}

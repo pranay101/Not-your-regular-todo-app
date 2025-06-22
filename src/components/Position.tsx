@@ -6,7 +6,7 @@ interface PositionProps {}
 
 const Position: React.FC<PositionProps> = () => {
   return (
-    <div className="w-[140px] h-48 bg-primary-bg border border-stroke-primary rounded-xl p-2 flex flex-col justify-between">
+    <div className="component-card w-[140px] h-48 bg-primary-bg border border-stroke-primary rounded-xl p-2 flex flex-col justify-between">
       <div className="flex items-center gap-2 mb-2">
         <span className="rounded-full p-1 bg-secondary-bg">
           <BuildingLibraryIcon className="w-4 h-4 text-gold" />

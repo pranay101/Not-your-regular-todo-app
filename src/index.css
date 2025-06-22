@@ -37,8 +37,7 @@ body {
   --color-gold: #d6b84c;
 }
 
-
-.add-todo{
+.add-todo {
   font-size: 14px !important;
 }
 
@@ -53,4 +52,8 @@ body {
 .add-todo .rdp-today:not(.rdp-outside) {
   color: #d63f3d;
   font-weight: 700;
+}
+
+.component-card {
+  box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
 }
