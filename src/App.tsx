@@ -1,5 +1,5 @@
 import "./App.css";
-import { ActivityGraph, Calendar, PomodoroToday, Position, WorkMode } from "./components";
+import { ActivityGraph, Calendar, PomodoroToday, Position, QuickNote, WorkMode } from "./components";
 
 function App() {
   return (
@@ -11,7 +11,10 @@ function App() {
           <Position />
           <WorkMode />
         </div>
-        <PomodoroToday totalTasks={10} completedTasks={7} />
+        <div className="flex items-start gap-4 mt-4">
+          <PomodoroToday totalTasks={10} completedTasks={7} />
+          <QuickNote />
+        </div>
       </section>
       {/* <section className="bg-red-500 h-full w-full col-span-2"></section>
       <section className="bg-red-500 h-full w-full col-span-1"></section> */}
