@@ -1,12 +1,11 @@
-import React, { useState } from "react";
-import data from "../config/data.json";
 import {
   CheckCircleIcon,
   CheckIcon,
   PlusIcon,
 } from "@heroicons/react/24/outline";
-import { motion, AnimatePresence } from "framer-motion";
-import { Modal, Select } from "./UI";
+import { AnimatePresence, motion } from "framer-motion";
+import React, { useState } from "react";
+import data from "../config/data.json";
 import CreateNewTodoModal from "./CreateNewTodoModal";
 
 interface Todo {
@@ -68,7 +67,7 @@ const TodoListColumn: React.FC<TodoListColumnProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
-    <div className="w-full flex flex-col max-h-[688px] bg-primary-bg border border-stroke-primary rounded-xl p-2">
+    <div className="w-full flex flex-col h-[700px] bg-primary-bg border border-stroke-primary rounded-xl p-2">
       <div className="flex items-center gap-2 flex-shrink-0">
         <div className="w-6 h-6 rounded-full p-1 bg-secondary-bg">
           <CheckCircleIcon className="text-primary-blue" />

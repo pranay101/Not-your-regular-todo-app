@@ -24,4 +24,15 @@ declare namespace NodeJS {
 // Used in Renderer process, expose in `preload.ts`
 interface Window {
   ipcRenderer: import('electron').IpcRenderer
+  api: {
+    minimize: () => void
+    maximize: () => void
+  }
+}
+
+// Add WebkitAppRegion CSS property for Electron window controls
+declare module 'react' {
+  interface CSSProperties {
+    WebkitAppRegion?: 'drag' | 'no-drag'
+  }
 }

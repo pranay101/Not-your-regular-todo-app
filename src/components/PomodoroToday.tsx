@@ -12,7 +12,7 @@ const PomodoroToday: React.FC<PomodoroTodayProps> = ({  totalTasks = 10, complet
     const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
     return (
-        <div className="component-card w-[292px] h-[232px] bg-primary-bg border border-stroke-primary rounded-xl p-2">
+        <div className="component-card w-[292px] h-[260px] bg-primary-bg border border-stroke-primary rounded-xl p-2">
             <div className="flex items-center gap-2">
                 <div className="w-6 h-6 rounded-full p-1 bg-secondary-bg">
                     <PresentationChartBarIcon className="text-primary-red" />{" "}
