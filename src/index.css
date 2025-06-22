@@ -27,10 +27,12 @@ body {
 
 @theme {
   --color-primary-red: #d63f3d;
-  --color-text-primary: #9e9da2;
+  --color-text-primary: #a2a3a7;
   --color-stroke-primary: #27262a;
+  --color-stroke-secondary: #403f45;
   --color-primary-bg: #18181a;
-  --color-primary-blue: #18181a;
+  --color-primary-blue: #2a9ed0;
+  --color-primary-purple: #5e35a1;
   --color-secondary-bg: #282529;
   --color-gold: #d6b84c;
 }

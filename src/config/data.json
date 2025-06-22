@@ -1,0 +1,214 @@
+{
+  "todos": [
+    {
+      "id": 1,
+      "title": "Complete project documentation",
+      "description": "Write comprehensive documentation for the current sprint",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 2,
+      "title": "Review pull requests",
+      "description": "Review and merge pending pull requests from team members", 
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 3,
+      "title": "Debug authentication flow",
+      "description": "Fix user login issues reported in the staging environment",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 4,
+      "title": "Update dependencies",
+      "description": "Upgrade project dependencies to latest stable versions",
+      "status": "done",
+      "priority": "low"
+    },
+    {
+      "id": 5,
+      "title": "Implement dark mode",
+      "description": "Add dark mode theme support across all components",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 6,
+      "title": "Optimize image loading",
+      "description": "Implement lazy loading for better performance",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 7,
+      "title": "Write unit tests",
+      "description": "Increase test coverage for core components",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 8,
+      "title": "Refactor CSS",
+      "description": "Clean up and organize stylesheet structure",
+      "status": "done",
+      "priority": "low"
+    },
+    {
+      "id": 9,
+      "title": "Setup CI/CD pipeline",
+      "description": "Configure automated deployment workflow",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 10,
+      "title": "Add error handling",
+      "description": "Implement global error boundary and logging",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 11,
+      "title": "Create user dashboard",
+      "description": "Design and implement main user dashboard layout",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 12,
+      "title": "Optimize database queries",
+      "description": "Improve database performance and reduce load times",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 13,
+      "title": "Add data visualization",
+      "description": "Implement charts for analytics dashboard",
+      "status": "done",
+      "priority": "medium"
+    },
+    {
+      "id": 14,
+      "title": "Setup monitoring",
+      "description": "Configure application monitoring and alerts",
+      "status": "done",
+      "priority": "high"
+    },
+    {
+      "id": 15,
+      "title": "Implement search feature",
+      "description": "Add global search functionality with filters",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 16,
+      "title": "Update API documentation",
+      "description": "Document new API endpoints and update examples",
+      "status": "pending",
+      "priority": "low"
+    },
+    {
+      "id": 17,
+      "title": "Fix mobile responsiveness",
+      "description": "Address UI issues on mobile devices",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 18,
+      "title": "Add user onboarding",
+      "description": "Create interactive tutorial for new users",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 19,
+      "title": "Implement notifications",
+      "description": "Add real-time notification system",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 20,
+      "title": "Security audit",
+      "description": "Perform security review and fix vulnerabilities",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 21,
+      "title": "Implement user preferences",
+      "description": "Add customizable user settings and preferences",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 22,
+      "title": "Add export functionality",
+      "description": "Enable data export in multiple formats",
+      "status": "pending",
+      "priority": "low"
+    },
+    {
+      "id": 23,
+      "title": "Implement rate limiting",
+      "description": "Add API rate limiting for better security",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 24,
+      "title": "Create backup system",
+      "description": "Implement automated backup solution",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 25,
+      "title": "Add keyboard shortcuts",
+      "description": "Implement keyboard navigation throughout the app",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 26,
+      "title": "Optimize bundle size",
+      "description": "Reduce application bundle size for faster loading",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 27,
+      "title": "Add multi-language support",
+      "description": "Implement internationalization (i18n)",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 28,
+      "title": "Implement file upload",
+      "description": "Add secure file upload functionality",
+      "status": "pending",
+      "priority": "medium"
+    },
+    {
+      "id": 29,
+      "title": "Create admin dashboard",
+      "description": "Build administrative interface for system management",
+      "status": "pending",
+      "priority": "high"
+    },
+    {
+      "id": 30,
+      "title": "Add password recovery",
+      "description": "Implement secure password reset workflow",
+      "status": "pending",
+      "priority": "medium"
+    }
+  ]
+}
