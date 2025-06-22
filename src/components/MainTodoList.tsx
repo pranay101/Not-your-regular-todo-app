@@ -1,7 +1,13 @@
 import React, { useState } from "react";
 import data from "../config/data.json";
-import { CheckCircleIcon, CheckIcon } from "@heroicons/react/24/outline";
+import {
+  CheckCircleIcon,
+  CheckIcon,
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 import { motion, AnimatePresence } from "framer-motion";
+import { Modal, Select } from "./UI";
+import CreateNewTodoModal from "./CreateNewTodoModal";
 
 interface Todo {
   id: number;
@@ -45,6 +51,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
 };
 
 interface TodoListColumnProps {
+  id: string;
   title: string;
   todos: Todo[];
   onStatusChange: (id: number) => void;
@@ -53,10 +60,13 @@ interface TodoListColumnProps {
 
 const TodoListColumn: React.FC<TodoListColumnProps> = ({
   title,
+  id,
   todos,
   onStatusChange,
   isDone,
 }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
   return (
     <div className="w-full flex flex-col max-h-[688px] bg-primary-bg border border-stroke-primary rounded-xl p-2">
       <div className="flex items-center gap-2 flex-shrink-0">
@@ -66,6 +76,13 @@ const TodoListColumn: React.FC<TodoListColumnProps> = ({
         <h5 className="text-white text-xs font-medium tracking-wide">
           {title}
         </h5>
+
+        <button
+          className="ml-auto cursor-pointer"
+          onClick={setIsModalOpen.bind(null, true)}
+        >
+          <PlusIcon className="w-4 h-4 text-white" />
+        </button>
       </div>
       <div className="flex flex-col gap-2 mt-4 text-sm text-text-primary flex-1 overflow-y-auto">
         <AnimatePresence>
@@ -79,6 +96,11 @@ const TodoListColumn: React.FC<TodoListColumnProps> = ({
           ))}
         </AnimatePresence>
       </div>
+      <CreateNewTodoModal
+        isModalOpen={isModalOpen}
+        setIsModalOpen={setIsModalOpen}
+        id={id}
+      />
     </div>
   );
 };
@@ -102,12 +124,14 @@ const MainTodoList: React.FC = () => {
   return (
     <div className="grid grid-cols-2 gap-4 h-full flex-1 overflow-y-auto">
       <TodoListColumn
+        id="completed"
         title="Completed"
         todos={doneTodos}
         onStatusChange={handleStatusChange}
         isDone={true}
       />
       <TodoListColumn
+        id="pending"
         title="Pending"
         todos={pendingTodos}
         onStatusChange={handleStatusChange}

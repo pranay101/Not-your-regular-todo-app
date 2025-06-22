@@ -36,3 +36,21 @@ body {
   --color-secondary-bg: #282529;
   --color-gold: #d6b84c;
 }
+
+
+.add-todo{
+  font-size: 14px !important;
+}
+
+.add-todo .rdp-chevron {
+  fill: #d63f3d;
+}
+
+.add-todo .rdp-selected .rdp-day_button {
+  border-color: #d63f3d;
+}
+
+.add-todo .rdp-today:not(.rdp-outside) {
+  color: #d63f3d;
+  font-weight: 700;
+}
