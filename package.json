@@ -12,6 +12,7 @@
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.1.10",
+    "framer-motion": "^12.18.1",
     "moment": "^2.30.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",

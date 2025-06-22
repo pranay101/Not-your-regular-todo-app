@@ -15,7 +15,7 @@ const Position: React.FC<PositionProps> = () => {
           Position
         </h5>
       </div>
-      <div className="flex flex-col items-center justify-center gap-2 flex-1 px-4 mt-4 text-text-primary text-center">
+      <div className="flex flex-col text-sm font-medium items-center justify-center gap-2 flex-1 px-4  text-text-primary text-center">
         <SilverBadge className="w-10" />
         <p>259 Points Rank 2 of 17</p>
       </div>

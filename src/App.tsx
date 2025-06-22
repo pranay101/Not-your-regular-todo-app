@@ -1,5 +1,5 @@
 import "./App.css";
-import { ActivityGraph, Calendar, Position } from "./components";
+import { ActivityGraph, Calendar, Position, WorkMode } from "./components";
 
 function App() {
   return (
@@ -7,8 +7,9 @@ function App() {
       <section className="col-span-2 w-full overflow-x-auto h-fit">
         <ActivityGraph />
         <div className="flex items-start gap-4 mt-4">
-          <Calendar className="w-52 bg-bg-secondary bg-gray-100" />
+          <Calendar className="flex-1 bg-bg-secondary bg-gray-100" />
           <Position />
+          <WorkMode />
         </div>
       </section>
       {/* <section className="bg-red-500 h-full w-full col-span-2"></section>

@@ -74,7 +74,7 @@ const ActivityGraph = () => {
             .map((week, index) => (
               <div className="flex flex-col items-start justify-center gap-1 bg-transparent">
                 {Array.from({ length: 7 }).map((day, i) => {
-                  const randomNumber = Math.floor(Math.random() * 4);
+                  const randomNumber = Math.floor(Math.random() * 10);
                   return (
                     <div
                       key={`${index}-${i}`}
