@@ -1,7 +1,82 @@
-import { ipcMain, app, BrowserWindow } from "electron";
+import { app, ipcMain, BrowserWindow } from "electron";
 import { createRequire } from "node:module";
 import { fileURLToPath } from "node:url";
 import path from "node:path";
+import Database from "better-sqlite3";
+const __filename = fileURLToPath(import.meta.url);
+const __dirname$1 = path.dirname(__filename);
+global.__filename = __filename;
+global.__dirname = __dirname$1;
+let db = null;
+function initDatabase() {
+  if (db) return db;
+  const dbPath = app ? path.join(app.getPath("userData"), "app.db") : path.join(__dirname$1, "app.db");
+  db = new Database(dbPath);
+  db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS todos (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      title TEXT NOT NULL,
+      description TEXT,
+      status TEXT,
+      priority TEXT
+    );
+  `
+  ).run();
+  db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS notes (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      content TEXT,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `
+  ).run();
+  return db;
+}
+function getDb() {
+  if (!db)
+    throw new Error("Database not initialized. Call initDatabase() first.");
+  return db;
+}
+function getAllTodos() {
+  return getDb().prepare("SELECT * FROM todos").all();
+}
+function addTodo(todo) {
+  const stmt = getDb().prepare(
+    "INSERT INTO todos (title, description, status, priority) VALUES (?, ?, ?, ?)"
+  );
+  const info = stmt.run(
+    todo.title,
+    todo.description,
+    todo.status,
+    todo.priority
+  );
+  return { ...todo, id: info.lastInsertRowid };
+}
+function updateTodoStatus(id, status) {
+  getDb().prepare("UPDATE todos SET status = ? WHERE id = ?").run(status, id);
+}
+function deleteTodo(id) {
+  getDb().prepare("DELETE FROM todos WHERE id = ?").run(id);
+}
+function getAllNotes() {
+  return getDb().prepare("SELECT * FROM notes").all();
+}
+function addNote(content) {
+  const stmt = getDb().prepare("INSERT INTO notes (content) VALUES (?)");
+  const info = stmt.run(content);
+  return { id: info.lastInsertRowid, content };
+}
+function updateNote(id, content) {
+  getDb().prepare(
+    "UPDATE notes SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
+  ).run(content, id);
+}
+function deleteNote(id) {
+  getDb().prepare("DELETE FROM notes WHERE id = ?").run(id);
+}
 createRequire(import.meta.url);
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 process.env.APP_ROOT = path.join(__dirname, "..");
@@ -49,6 +124,38 @@ ipcMain.on("maximize-window", () => {
     }
   }
 });
+app.whenReady().then(() => {
+  initDatabase();
+  createWindow();
+  ipcMain.handle("todos:getAll", () => {
+    return getAllTodos();
+  });
+  ipcMain.handle("todos:add", (event, todo) => {
+    return addTodo(todo);
+  });
+  ipcMain.handle("todos:updateStatus", (event, id, status) => {
+    updateTodoStatus(id, status);
+    return { success: true };
+  });
+  ipcMain.handle("todos:delete", (event, id) => {
+    deleteTodo(id);
+    return { success: true };
+  });
+  ipcMain.handle("notes:getAll", () => {
+    return getAllNotes();
+  });
+  ipcMain.handle("notes:add", (event, content) => {
+    return addNote(content);
+  });
+  ipcMain.handle("notes:update", (event, id, content) => {
+    updateNote(id, content);
+    return { success: true };
+  });
+  ipcMain.handle("notes:delete", (event, id) => {
+    deleteNote(id);
+    return { success: true };
+  });
+});
 app.on("window-all-closed", () => {
   if (process.platform !== "darwin") {
     app.quit();
@@ -60,7 +167,6 @@ app.on("activate", () => {
     createWindow();
   }
 });
-app.whenReady().then(createWindow);
 export {
   MAIN_DIST,
   RENDERER_DIST,
