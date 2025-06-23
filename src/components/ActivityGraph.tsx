@@ -1,10 +1,10 @@
-import { twMerge } from "tailwind-merge";
-import { WEEKDAY } from "../config";
+import { ChartPieIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
-import { ChartBarIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
+import { twMerge } from "tailwind-merge";
 
 const WEEKS = 52;
-const STARTING_DAY = "2025-06-15";
+const STARTING_DAY = moment().subtract(1, "year").format("YYYY-MM-DD");
 
 function generateMonthLabels(startDate: string, weeks: number): string[] {
   const labels: string[] = [];
@@ -39,6 +39,31 @@ function getColorClass(count: number): string {
   return `bg-[#E86355] ${border}`;
 }
 
+interface CustomTooltipProps {
+  children: React.ReactNode;
+  content: string;
+}
+
+const CustomTooltip: React.FC<CustomTooltipProps> = ({ children, content }) => {
+  const [show, setShow] = useState(false);
+
+  return (
+    <div
+      className="relative"
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+    >
+      {children}
+      {show && (
+        <div className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-1 px-2 py-1 bg-gray-800 text-white text-xs rounded whitespace-nowrap z-10">
+          {content}
+          <div className="absolute bottom-[-4px] left-1/2 transform -translate-x-1/2 w-2 h-2 bg-gray-800 rotate-45"></div>
+        </div>
+      )}
+    </div>
+  );
+};
+
 const ActivityGraph = () => {
   const monthLabels = generateMonthLabels(STARTING_DAY, WEEKS);
   console.log(monthLabels);
@@ -46,7 +71,7 @@ const ActivityGraph = () => {
     <div className="component-card bg-primary-bg border border-gray-800 rounded-xl p-2">
       <div className="flex items-center gap-2">
         <div className="w-6 h-6 rounded-full p-1 bg-secondary-bg">
-          <ChartBarIcon className="fill-primary-red outline-none border-none" />{" "}
+          <ChartPieIcon className="text-primary-red" />{" "}
         </div>
         <h5 className="text-white text-xs font-medium tracking-wide">
           Pomodoro Activity
@@ -62,7 +87,7 @@ const ActivityGraph = () => {
         </div>
 
         <div className="flex items-start gap-1 relative">
-          <div className="sticky top-0 left-0 text-[10px] min-w-6 leading-0 text-gray-400 bg-[rgb(26,27,28)] font-medium flex flex-col gap-1 justify-center ">
+          <div className="sticky top-0 left-0 text-[10px] min-w-6 leading-0 text-gray-400 bg-[rgb(26,27,28)] font-medium flex flex-col gap-1 justify-center z-20">
             {WEEK_DAY_LABELS.map((e) => (
               <p className="min-h-3 w-fit flex items-center justify-center">
                 {e}
@@ -75,20 +100,24 @@ const ActivityGraph = () => {
               <div className="flex flex-col items-start justify-center gap-1 bg-transparent">
                 {Array.from({ length: 7 }).map((day, i) => {
                   const randomNumber = Math.floor(Math.random() * 10);
+                  const tooltipContent = `${randomNumber}  Contributions on ${moment(
+                    STARTING_DAY
+                  )
+                    .add(index, "weeks")
+                    .add(i, "days")
+                    .format("MMM Do YY")}`;
+
                   return (
-                    <div
-                      key={`${index}-${i}`}
-                      title={`${randomNumber} Contributions on ${moment(
-                        STARTING_DAY
-                      )
-                        .add(index, "weeks")
-                        .add(i, "days")
-                        .format("MMM Do YY")}`}
-                      className={twMerge(
-                        getColorClass(randomNumber),
-                        " text-white aspect-square w-3 h-3 rounded-xs"
-                      )}
-                    />
+                    <div key={`${index}-${i}`}>
+                      <CustomTooltip content={tooltipContent}>
+                        <div
+                          className={twMerge(
+                            getColorClass(randomNumber),
+                            " text-white aspect-square w-3 h-3 rounded-xs"
+                          )}
+                        />
+                      </CustomTooltip>
+                    </div>
                   );
                 })}
               </div>

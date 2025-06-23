@@ -7,47 +7,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import React, { useState } from "react";
 import data from "../config/data.json";
 import CreateNewTodoModal from "./CreateNewTodoModal";
-
-interface Todo {
-  id: number;
-  title: string;
-  description: string;
-  status: string;
-  priority: string;
-}
-
-interface TodoItemProps {
-  todo: Todo;
-  onStatusChange: (id: number) => void;
-  isDone: boolean;
-}
-
-const TodoItem: React.FC<TodoItemProps> = ({
-  todo,
-  onStatusChange,
-  isDone,
-}) => {
-  return (
-    <motion.div
-      layout
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-      transition={{ duration: 0.2 }}
-      className="flex items-start gap-2 cursor-pointer"
-      onClick={() => onStatusChange(todo.id)}
-    >
-      {isDone ? (
-        <div className="w-6 h-6 rounded-full flex items-center justify-center aspect-square border border-primary-purple">
-          <CheckIcon className="w-4 h-4 text-white" />
-        </div>
-      ) : (
-        <div className="w-6 h-6 rounded-full flex items-center justify-center aspect-square bg-secondary-bg border border-stroke-secondary" />
-      )}
-      <p className="text-xs font-medium mt-1">{todo.title}</p>
-    </motion.div>
-  );
-};
+import { Todo } from "../config";
+import TodoItem from "./TodoItem";
 
 interface TodoListColumnProps {
   id: string;
@@ -91,6 +52,8 @@ const TodoListColumn: React.FC<TodoListColumnProps> = ({
               todo={todo}
               onStatusChange={onStatusChange}
               isDone={isDone}
+              
+
             />
           ))}
         </AnimatePresence>
