@@ -1,10 +1,16 @@
 import {
+  ArrowPathIcon,
   ArrowsPointingOutIcon,
+  Cog6ToothIcon,
   MinusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 
-const Header = () => {
+interface HeaderProps {
+  loadTodos: () => void;
+}
+
+const Header: React.FC<HeaderProps> = ({ loadTodos }) => {
   return (
     <header
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
@@ -28,7 +34,10 @@ const Header = () => {
         <button
           className="w-3 h-3 rounded-full bg-green-500 hover:bg-green-600 flex items-center justify-center"
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-          onClick={() => window.api.maximize()}
+          onClick={() => {
+            window.api.maximize();
+            loadTodos();
+          }}
         >
           <ArrowsPointingOutIcon className="w-2 h-2 text-green-900" />
         </button>
@@ -36,7 +45,14 @@ const Header = () => {
       <h5 className="text-white text-center text-sm font-semibold">
         The Thu Du App
       </h5>
-      <div className="w-24" /> {/* Spacer to center title */}
+      <div className="w-24 flex items-center gap-2 justify-end  ">
+        <button className="cursor-pointer" onClick={() => loadTodos()}>
+          <ArrowPathIcon className="w-4 h-4 text-white" />
+        </button>
+        <button className="cursor-pointer">
+          <Cog6ToothIcon className="w-4 h-4 text-white" />
+        </button>
+      </div>
     </header>
   );
 };

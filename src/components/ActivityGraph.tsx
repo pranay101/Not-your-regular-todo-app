@@ -14,11 +14,11 @@ function generateMonthLabels(startDate: string, weeks: number): string[] {
     const date = moment(startDate).add(week * 7, "days");
     const currentMonth = date.format("MMM");
 
-    console.log("be", currentMonth, previousMonth, startDate);
+    // console.log("be", currentMonth, previousMonth, startDate);
     if (currentMonth !== previousMonth) {
       labels.push(currentMonth);
       previousMonth = currentMonth;
-      console.log("af", currentMonth, previousMonth, startDate);
+      // console.log("af", currentMonth, previousMonth, startDate);
     } else {
       labels.push(""); // spacer
     }
@@ -66,7 +66,7 @@ const CustomTooltip: React.FC<CustomTooltipProps> = ({ children, content }) => {
 
 const ActivityGraph = () => {
   const monthLabels = generateMonthLabels(STARTING_DAY, WEEKS);
-  console.log(monthLabels);
+  // console.log(monthLabels);
   return (
     <div className="component-card bg-primary-bg border border-gray-800 rounded-xl p-2">
       <div className="flex items-center gap-2">

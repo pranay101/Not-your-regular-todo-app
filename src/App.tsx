@@ -1,3 +1,4 @@
+import { useCallback } from "react";
 import "./App.css";
 import {
   ActivityGraph,
@@ -10,12 +11,40 @@ import {
   QuickNote,
   WorkMode,
 } from "./components";
-
+import { useState } from "react";
+import { Todo } from "./config";
+import moment from "moment";
 
 function App() {
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [todos, setTodos] = useState<Todo[]>([]);
+
+  const loadTodos = useCallback(async () => {
+    try {
+      const today = moment().format("YYYY-MM-DD");
+      setLoading(true);
+      setError(null);
+      const todosData = await window.ipcRenderer.invoke(
+        "todos:getByDate",
+        today
+      );
+
+      console.log(todosData, "asad");
+      setTodos(todosData);
+    } catch (err) {
+      console.error("Failed to load todos:", err);
+      setError("Failed to load todos. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  const completedTodos = todos?.filter((todo) => todo.status === "done") || [];
+
   return (
     <div className="flex flex-col h-full">
-      <Header />
+      <Header loadTodos={loadTodos} />
       <main className="grid grid-cols-5 gap-4 h-full p-4">
         <section className="col-span-2 w-full overflow-x-auto h-fit">
           <ActivityGraph />
@@ -25,12 +54,21 @@ function App() {
             <WorkMode />
           </div>
           <div className="flex items-start gap-4 mt-4">
-            <PomodoroToday totalTasks={10} completedTasks={7} />
+            <PomodoroToday
+              totalTasks={todos.length}
+              completedTasks={completedTodos.length}
+            />
             <QuickNote />
           </div>
         </section>
         <section className="col-span-2 flex flex-col w-full flex-1 h-full overflow-y-auto">
-          <MainTodoList />
+          <MainTodoList
+            loadTodos={loadTodos}
+            loading={loading}
+            error={error}
+            todos={todos}
+            setTodos={setTodos}
+          />
         </section>
         <section className="col-span-1 flex flex-col w-full flex-1 h-full overflow-y-auto">
           <OtherTodoInfo />

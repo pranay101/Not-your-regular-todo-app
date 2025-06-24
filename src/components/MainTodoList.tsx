@@ -1,6 +1,6 @@
 import { CheckCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence } from "framer-motion";
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Todo } from "../config";
 import CreateNewTodoModal from "./CreateNewTodoModal";
 import TodoItem from "./TodoItem";
@@ -70,37 +70,21 @@ const TodoListColumn: React.FC<TodoListColumnProps> = ({
   );
 };
 
-const MainTodoList: React.FC = () => {
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+interface MainTodoListProps {
+  loadTodos: () => void;
+  loading: boolean;
+  error: string | null;
+  todos: Todo[];
+  setTodos: (todos: Todo[]) => void;
+}
 
-
-
-  const loadTodos = useCallback(async () => {
-    try {
-      const today = moment().format("YYYY-MM-DD");
-      setLoading(true);
-      setError(null);
-      const todosData = await window.ipcRenderer.invoke(
-        "todos:getByDate",
-        today
-      );
-
-      console.log(todosData,"asad");
-      setTodos(todosData);
-    } catch (err) {
-      console.error("Failed to load todos:", err);
-      setError("Failed to load todos. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  }, []);
-
-  useEffect(() => {
-    loadTodos();
-  }, [loadTodos]);
-
+const MainTodoList: React.FC<MainTodoListProps> = ({
+  loadTodos,
+  loading,
+  error,
+  todos,
+  setTodos,
+}) => {
   const handleStatusChange = async (id: number) => {
     try {
       const todo = todos.find((t) => t.id === id);
