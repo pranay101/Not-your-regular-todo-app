@@ -33,6 +33,10 @@ function initDatabase() {
     );
   `
   ).run();
+  const todoCount = db.prepare("SELECT COUNT(*) as count FROM todos").get();
+  if (todoCount.count === 0) {
+    console.log("Database empty");
+  }
   return db;
 }
 function getDb() {

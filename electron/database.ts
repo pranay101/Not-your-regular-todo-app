@@ -46,6 +46,14 @@ export function initDatabase() {
   `
   ).run();
 
+  // Seed with initial data if todos table is empty
+  const todoCount = db.prepare("SELECT COUNT(*) as count FROM todos").get() as {
+    count: number;
+  };
+  if (todoCount.count === 0) {
+    console.log("Database empty");
+  }
+
   return db;
 }
 
