@@ -1,27 +1,33 @@
 import {
   ArrowRightIcon,
+  CheckCircleIcon,
   CheckIcon,
+  ExclamationTriangleIcon,
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
 import { Todo } from "../config";
 import { useState } from "react";
+import EditTodoModal from "./EditTodoModal";
+import moment from "moment";
 
 interface TodoItemProps {
   todo: Todo;
   onStatusChange: (id: number) => void;
   isDone: boolean;
-  onDelete?: (id: number) => void;
+  onRefresh?: () => void;
 }
 
 const TodoItem: React.FC<TodoItemProps> = ({
   todo,
   onStatusChange,
   isDone,
-  onDelete,
+  onRefresh,
 }) => {
   const [showContextMenu, setShowContextMenu] = useState(false);
+  const [isDeleting, setIsDeleting] = useState(false);
+  const [showEditModal, setShowEditModal] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
     y: 0,
@@ -37,6 +43,54 @@ const TodoItem: React.FC<TodoItemProps> = ({
     setShowContextMenu(false);
   };
 
+  const handleDelete = async () => {
+    try {
+      setIsDeleting(true);
+      await window.ipcRenderer.invoke("todos:delete", todo.id);
+      onRefresh?.(); // Refresh the parent component
+    } catch (error) {
+      console.error("Failed to delete todo:", error);
+      alert("Failed to delete todo. Please try again.");
+    } finally {
+      setIsDeleting(false);
+      setShowContextMenu(false);
+    }
+  };
+
+  const handleEdit = () => {
+    setShowEditModal(true);
+    setShowContextMenu(false);
+  };
+
+  const handleMoveToTomorrow = async () => {
+    try {
+      await window.ipcRenderer.invoke("todos:update", todo.id, {
+        ...todo,
+        date: moment(todo.date).add(1, "day").format("YYYY-MM-DD"),
+      });
+      onRefresh?.();
+
+      setShowContextMenu(false);
+    } catch (error) {
+      console.error("Failed to update todo:", error);
+      alert("Failed to update todo. Please try again.");
+      setShowContextMenu(false);
+    }
+  };
+
+  const getPriorityIcon = (priority: string) => {
+    switch (priority.toLowerCase()) {
+      case "high":
+        return <ExclamationTriangleIcon className="w-4 h-4 text-primary-red" />;
+      case "medium":
+        return <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500" />;
+      case "low":
+        return <CheckCircleIcon className="w-4 h-4 text-green-500" />;
+      default:
+        return <CheckCircleIcon className="w-4 h-4 text-gray-400" />;
+    }
+  };
+
   return (
     <>
       <motion.div
@@ -45,7 +99,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.2 }}
-        className="flex items-start gap-2 cursor-pointer"
+        className="flex items-start gap-2 cursor-pointer group hover:bg-secondary-bg/40 p-2 rounded-sm transition-colors"
         onContextMenu={handleContextMenu}
       >
         {isDone ? (
@@ -62,21 +116,43 @@ const TodoItem: React.FC<TodoItemProps> = ({
           />
         )}
 
-        <p className="text-xs font-medium mt-1">{todo.title}</p>
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2">
+            <p
+              className={`text-xs font-medium  ${
+                isDone ? "line-through text-gray-400" : "text-white"
+              }`}
+            >
+              {todo.title}
+            </p>
+            <div className="relative">{getPriorityIcon(todo.priority)}</div>
+          </div>
+          {todo.description && (
+            <p
+              className={`text-xs mt-1 ${
+                isDone ? "line-through text-gray-500" : "text-gray-400"
+              }`}
+            >
+              {todo.description.length > 50
+                ? `${todo.description.substring(0, 50)}...`
+                : todo.description}
+            </p>
+          )}
+        </div>
       </motion.div>
 
       {showContextMenu && (
         <>
           <div className="fixed inset-0 z-40" onClick={handleClickOutside} />
           <div
-            className="fixed z-50 bg-secondary-bg border border-stroke-secondary rounded-md shadow-lg p-0.5"
+            className="fixed z-50 bg-secondary-bg border border-stroke-secondary rounded-md shadow-lg p-0.5 min-w-[160px]"
             style={{
               left: contextMenuPosition.x,
               top: contextMenuPosition.y,
             }}
           >
             <button
-              className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg flex items-center gap-2 rounded-sm"
+              className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg flex items-center gap-2 rounded-sm transition-colors"
               onClick={() => {
                 onStatusChange(todo.id);
                 setShowContextMenu(false);
@@ -85,42 +161,43 @@ const TodoItem: React.FC<TodoItemProps> = ({
               <CheckIcon className="w-4 h-4" />
               Mark as {isDone ? "Pending" : "Done"}
             </button>
+
             <button
-              className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg flex items-center gap-2 rounded-sm"
-              onClick={() => {
-                onStatusChange(todo.id);
-                setShowContextMenu(false);
-              }}
+              className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg flex items-center gap-2 rounded-sm transition-colors"
+              onClick={handleMoveToTomorrow}
             >
               <ArrowRightIcon className="w-4 h-4" />
               Move to Tomorrow
             </button>
+
             <button
-              className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg flex items-center gap-2 rounded-sm"
-              onClick={() => {
-                onStatusChange(todo.id);
-                setShowContextMenu(false);
-              }}
+              className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg flex items-center gap-2 rounded-sm transition-colors"
+              onClick={handleEdit}
             >
               <PencilIcon className="w-4 h-4" />
               Edit
             </button>
 
-            {onDelete && (
-              <button
-                className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg text-red-500 flex items-center gap-2 rounded-sm"
-                onClick={() => {
-                  onDelete(todo.id);
-                  setShowContextMenu(false);
-                }}
-              >
-                <TrashIcon className="w-4 h-4" />
-                Delete
-              </button>
-            )}
+            <div className="border-t border-stroke-secondary my-1" />
+
+            <button
+              className="w-full px-4 py-2 text-xs text-left hover:bg-primary-bg text-primary-red flex items-center gap-2 rounded-sm transition-colors disabled:opacity-50"
+              onClick={handleDelete}
+              disabled={isDeleting}
+            >
+              <TrashIcon className="w-4 h-4" />
+              {isDeleting ? "Deleting..." : "Delete"}
+            </button>
           </div>
         </>
       )}
+
+      <EditTodoModal
+        isModalOpen={showEditModal}
+        setIsModalOpen={setShowEditModal}
+        todo={todo}
+        onTodoUpdated={onRefresh}
+      />
     </>
   );
 };

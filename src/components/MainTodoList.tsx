@@ -4,6 +4,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { Todo } from "../config";
 import CreateNewTodoModal from "./CreateNewTodoModal";
 import TodoItem from "./TodoItem";
+import moment from "moment";
 
 interface TodoListColumnProps {
   id: string;
@@ -54,6 +55,7 @@ const TodoListColumn: React.FC<TodoListColumnProps> = ({
               todo={todo}
               onStatusChange={onStatusChange}
               isDone={isDone}
+              onRefresh={onRefresh}
             />
           ))}
         </AnimatePresence>
@@ -73,11 +75,19 @@ const MainTodoList: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+
+
   const loadTodos = useCallback(async () => {
     try {
+      const today = moment().format("YYYY-MM-DD");
       setLoading(true);
       setError(null);
-      const todosData = await window.ipcRenderer.invoke("todos:getAll");
+      const todosData = await window.ipcRenderer.invoke(
+        "todos:getByDate",
+        today
+      );
+
+      console.log(todosData,"asad");
       setTodos(todosData);
     } catch (err) {
       console.error("Failed to load todos:", err);
@@ -139,7 +149,7 @@ const MainTodoList: React.FC = () => {
   return (
     <div className="grid grid-cols-2 gap-4 h-full flex-1 overflow-y-auto">
       <TodoListColumn
-        id="completed"
+        id="done"
         title="Completed"
         todos={doneTodos}
         onStatusChange={handleStatusChange}

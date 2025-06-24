@@ -19,7 +19,8 @@ function initDatabase() {
       title TEXT NOT NULL,
       description TEXT,
       status TEXT,
-      priority TEXT
+      priority TEXT,
+      date TEXT
     );
   `
   ).run();
@@ -47,17 +48,27 @@ function getDb() {
 function getAllTodos() {
   return getDb().prepare("SELECT * FROM todos").all();
 }
+function getTodoByDate(date) {
+  return getDb().prepare("SELECT * FROM todos WHERE date = ?").all(date);
+}
 function addTodo(todo) {
   const stmt = getDb().prepare(
-    "INSERT INTO todos (title, description, status, priority) VALUES (?, ?, ?, ?)"
+    "INSERT INTO todos (title, description, status, priority, date) VALUES (?, ?, ?, ?, ?)"
   );
   const info = stmt.run(
     todo.title,
     todo.description,
     todo.status,
-    todo.priority
+    todo.priority,
+    todo.date
   );
   return { ...todo, id: info.lastInsertRowid };
+}
+function updateTodo(id, todo) {
+  getDb().prepare(
+    "UPDATE todos SET title = ?, description = ?, status = ?, priority = ?, date = ? WHERE id = ?"
+  ).run(todo.title, todo.description, todo.status, todo.priority, todo.date, id);
+  return { ...todo, id };
 }
 function updateTodoStatus(id, status) {
   getDb().prepare("UPDATE todos SET status = ? WHERE id = ?").run(status, id);
@@ -96,7 +107,7 @@ function createWindow() {
     maxHeight: 780,
     width: 1440,
     maxWidth: 1440,
-    frame: false,
+    // frame: false,
     backgroundColor: "#18181a",
     roundedCorners: true,
     // enables rounded corners (macOS only)
@@ -134,8 +145,14 @@ app.whenReady().then(() => {
   ipcMain.handle("todos:getAll", () => {
     return getAllTodos();
   });
+  ipcMain.handle("todos:getByDate", (event, date) => {
+    return getTodoByDate(date);
+  });
   ipcMain.handle("todos:add", (event, todo) => {
     return addTodo(todo);
+  });
+  ipcMain.handle("todos:update", (event, id, todo) => {
+    return updateTodo(id, todo);
   });
   ipcMain.handle("todos:updateStatus", (event, id, status) => {
     updateTodoStatus(id, status);

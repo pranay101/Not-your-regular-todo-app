@@ -36,7 +36,7 @@ function createWindow() {
     maxHeight: 780,
     width: 1440,
     maxWidth: 1440,
-    frame: false,
+    // frame: false,
     backgroundColor: "#18181a",
     roundedCorners: true, // enables rounded corners (macOS only)
     transparent: false,
@@ -84,8 +84,16 @@ app.whenReady().then(() => {
     return db.getAllTodos();
   });
 
+  ipcMain.handle("todos:getByDate", (event, date) => {
+    return db.getTodoByDate(date);
+  });
+
   ipcMain.handle("todos:add", (event, todo) => {
     return db.addTodo(todo);
+  });
+
+  ipcMain.handle("todos:update", (event, id, todo) => {
+    return db.updateTodo(id, todo);
   });
 
   ipcMain.handle("todos:updateStatus", (event, id, status) => {

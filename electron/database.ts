@@ -29,7 +29,8 @@ export function initDatabase() {
       title TEXT NOT NULL,
       description TEXT,
       status TEXT,
-      priority TEXT
+      priority TEXT,
+      date TEXT
     );
   `
   ).run();
@@ -68,22 +69,39 @@ export function getAllTodos() {
   return getDb().prepare("SELECT * FROM todos").all();
 }
 
+export function getTodoByDate(date: string) {
+  return getDb().prepare("SELECT * FROM todos WHERE date = ?").all(date);
+}
+
 export function addTodo(
   todo: Omit<
-    { title: string; description: string; status: string; priority: string },
+    { title: string; description: string; status: string; priority: string; date: string },
     "id"
   >
 ) {
   const stmt = getDb().prepare(
-    "INSERT INTO todos (title, description, status, priority) VALUES (?, ?, ?, ?)"
+    "INSERT INTO todos (title, description, status, priority, date) VALUES (?, ?, ?, ?, ?)"
   );
   const info = stmt.run(
     todo.title,
     todo.description,
     todo.status,
-    todo.priority
+    todo.priority,
+    todo.date
   );
   return { ...todo, id: info.lastInsertRowid };
+}
+
+export function updateTodo(
+  id: number,
+  todo: { title: string; description: string; status: string; priority: string; date: string }
+) {
+  getDb()
+    .prepare(
+      "UPDATE todos SET title = ?, description = ?, status = ?, priority = ?, date = ? WHERE id = ?"
+    )
+    .run(todo.title, todo.description, todo.status, todo.priority, todo.date, id);
+  return { ...todo, id };
 }
 
 export function updateTodoStatus(id: number, status: string) {

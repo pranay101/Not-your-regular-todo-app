@@ -16,6 +16,16 @@ interface Window {
       }
     ): Promise<any>;
     invoke(
+      channel: "todos:update",
+      id: number,
+      todo: {
+        title: string;
+        description: string;
+        status: string;
+        priority: string;
+      }
+    ): Promise<any>;
+    invoke(
       channel: "todos:updateStatus",
       id: number,
       status: string
@@ -30,6 +40,7 @@ interface Window {
     ): Promise<{ success: boolean }>;
     invoke(channel: "notes:delete", id: number): Promise<{ success: boolean }>;
     invoke(channel: string, ...args: any[]): Promise<any>;
+    invoke(channel: "todos:getByDate", date: string): Promise<any[]>;
   };
 }
 

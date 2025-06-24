@@ -1,35 +1,49 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { Modal, Select } from "./UI";
 import { DayPicker } from "react-day-picker";
 import "react-day-picker/style.css";
 import { useOutsideClick } from "../hooks";
 import { isValidString } from "../utils";
+import { Todo } from "../config";
 import moment from "moment";
 
-interface CreateNewTodoModalProps {
+interface EditTodoModalProps {
   isModalOpen: boolean;
   setIsModalOpen: (isModalOpen: boolean) => void;
-  id: string;
-  onTodoCreated?: () => void;
+  todo: Todo | null;
+  onTodoUpdated?: () => void;
 }
 
-const CreateNewTodoModal: React.FC<CreateNewTodoModalProps> = ({
+const EditTodoModal: React.FC<EditTodoModalProps> = ({
   isModalOpen,
   setIsModalOpen,
-  id,
-  onTodoCreated,
+  todo,
+  onTodoUpdated,
 }) => {
   const datePickerRef = useRef<HTMLDivElement>(null);
 
   const [formData, setFormData] = useState({
     title: "",
     date: new Date(),
-    status: id || "pending",
+    status: "pending",
     description: "",
     priority: "medium",
   });
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+
+  // Update form data when todo changes
+  useEffect(() => {
+    if (todo) {
+      setFormData({
+        title: todo.title,
+        date: moment(todo.date).toDate(), // We'll add date field to Todo type later
+        status: todo.status,
+        description: todo.description,
+        priority: todo.priority,
+      });
+    }
+  }, [todo]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, title: e.target.value });
@@ -65,11 +79,11 @@ const CreateNewTodoModal: React.FC<CreateNewTodoModalProps> = ({
   };
 
   const handleSubmit = async () => {
-    if (!isValidString(formData.title)) return;
+    if (!isValidString(formData.title) || !todo) return;
 
     try {
       setIsSubmitting(true);
-      await window.ipcRenderer.invoke("todos:add", {
+      await window.ipcRenderer.invoke("todos:update", todo.id, {
         title: formData.title,
         description: formData.description,
         status: formData.status,
@@ -77,21 +91,12 @@ const CreateNewTodoModal: React.FC<CreateNewTodoModalProps> = ({
         date: moment(formData.date).format("YYYY-MM-DD"),
       });
 
-      // Reset form
-      setFormData({
-        title: "",
-        date: new Date(),
-        status: "pending",
-        description: "",
-        priority: "medium",
-      });
-
       // Close modal and notify parent
       setIsModalOpen(false);
-      onTodoCreated?.();
+      onTodoUpdated?.();
     } catch (error) {
-      console.error("Failed to create todo:", error);
-      alert("Failed to create todo. Please try again.");
+      console.error("Failed to update todo:", error);
+      alert("Failed to update todo. Please try again.");
     } finally {
       setIsSubmitting(false);
     }
@@ -103,12 +108,14 @@ const CreateNewTodoModal: React.FC<CreateNewTodoModalProps> = ({
 
   useOutsideClick(datePickerRef, () => setShowDatePicker(false));
 
+  if (!todo) return null;
+
   return (
     <Modal
       isOpen={isModalOpen}
       onClose={setIsModalOpen.bind(null, false)}
       size="lg"
-      title="Add Todo"
+      title="Edit Todo"
       closeOnBackdropClick={true}
       closeOnEscape={true}
       showCloseButton={true}
@@ -211,7 +218,7 @@ const CreateNewTodoModal: React.FC<CreateNewTodoModalProps> = ({
             disabled={!isValidString(formData.title) || isSubmitting}
             className="bg-primary-red text-white px-4 py-2 rounded-sm text-sm w-full font-semibold cursor-pointer disabled:opacity-60 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? "Adding..." : "Add Todo"}
+            {isSubmitting ? "Updating..." : "Update Todo"}
           </button>
         </div>
       </div>
@@ -219,4 +226,4 @@ const CreateNewTodoModal: React.FC<CreateNewTodoModalProps> = ({
   );
 };
 
-export default CreateNewTodoModal;
+export default EditTodoModal;
