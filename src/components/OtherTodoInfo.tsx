@@ -55,6 +55,21 @@ const OtherTodoInfo = ({
     setEncouragementMessage(getRandomMessage(wholesomeMessages.encouragement));
   }, []);
 
+  const handleMarkAsDone = async (id: number) => {
+    try {
+      const todo = [...importantTodos, ...overdueTodos].find(
+        (t) => t.id === id
+      );
+      if (!todo) return;
+
+      await window.ipcRenderer.invoke("todos:updateStatus", id, "done");
+
+      onRefresh();
+    } catch (err) {
+      console.error("Failed to update todo status:", err);
+    }
+  };
+
   return (
     <div
       className={twMerge(
@@ -103,7 +118,7 @@ const OtherTodoInfo = ({
             <AnimatePresence>
               {importantTodos.map((todo) => (
                 <TodoItem
-                  onStatusChange={() => {}}
+                  onStatusChange={handleMarkAsDone}
                   isDone={false}
                   key={todo.id}
                   todo={todo}
@@ -144,7 +159,7 @@ const OtherTodoInfo = ({
             <AnimatePresence>
               {overdueTodos.map((todo) => (
                 <TodoItem
-                  onStatusChange={() => {}}
+                  onStatusChange={handleMarkAsDone}
                   isDone={false}
                   key={todo.id}
                   todo={todo}
