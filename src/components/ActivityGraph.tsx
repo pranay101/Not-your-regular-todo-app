@@ -134,8 +134,6 @@ const ActivityGraph = ({ todos }: ActivityGraphProps) => {
   // Build a 2D array: weeks x days
   const grid: Activity[][] = splitArrayToChunks(activityMap);
 
-  console.log(grid, activityMap, "grid");
-
   return (
     <div className="component-card bg-primary-bg border border-gray-800 rounded-xl p-2">
       <div className="flex items-center gap-2">
