@@ -67,7 +67,14 @@ function addTodo(todo) {
 function updateTodo(id, todo) {
   getDb().prepare(
     "UPDATE todos SET title = ?, description = ?, status = ?, priority = ?, date = ? WHERE id = ?"
-  ).run(todo.title, todo.description, todo.status, todo.priority, todo.date, id);
+  ).run(
+    todo.title,
+    todo.description,
+    todo.status,
+    todo.priority,
+    todo.date,
+    id
+  );
   return { ...todo, id };
 }
 function updateTodoStatus(id, status) {
@@ -75,6 +82,9 @@ function updateTodoStatus(id, status) {
 }
 function deleteTodo(id) {
   getDb().prepare("DELETE FROM todos WHERE id = ?").run(id);
+}
+function getTodosByDateRange(start, end) {
+  return getDb().prepare("SELECT * FROM todos WHERE date >= ? AND date <= ?").all(start, end);
 }
 function getAllNotes() {
   return getDb().prepare("SELECT * FROM notes").all();
@@ -107,7 +117,7 @@ function createWindow() {
     maxHeight: 780,
     width: 1440,
     maxWidth: 1440,
-    // frame: false,
+    frame: false,
     backgroundColor: "#18181a",
     roundedCorners: true,
     // enables rounded corners (macOS only)
@@ -161,6 +171,9 @@ app.whenReady().then(() => {
   ipcMain.handle("todos:delete", (event, id) => {
     deleteTodo(id);
     return { success: true };
+  });
+  ipcMain.handle("todos:getByDateRange", (event, start, end) => {
+    return getTodosByDateRange(start, end);
   });
   ipcMain.handle("notes:getAll", () => {
     return getAllNotes();

@@ -5,12 +5,14 @@ import {
   MinusIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
+import { twMerge } from "tailwind-merge";
 
 interface HeaderProps {
   loadTodos: () => void;
+  isLoading: boolean;
 }
 
-const Header: React.FC<HeaderProps> = ({ loadTodos }) => {
+const Header: React.FC<HeaderProps> = ({ loadTodos, isLoading }) => {
   return (
     <header
       style={{ WebkitAppRegion: "drag" } as React.CSSProperties}
@@ -45,11 +47,18 @@ const Header: React.FC<HeaderProps> = ({ loadTodos }) => {
       <h5 className="text-white text-center text-sm font-semibold">
         The Thu Du App
       </h5>
-      <div className="w-24 flex items-center gap-2 justify-end  ">
-        <button className="cursor-pointer" onClick={() => loadTodos()}>
+      <div className="w-24 z-20 flex items-center gap-2 justify-end  ">
+        <button
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+          className={twMerge("cursor-pointer", isLoading && "animate-spin")}
+          onClick={() => loadTodos()}
+        >
           <ArrowPathIcon className="w-4 h-4 text-white" />
         </button>
-        <button className="cursor-pointer">
+        <button
+          style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
+          className="cursor-pointer"
+        >
           <Cog6ToothIcon className="w-4 h-4 text-white" />
         </button>
       </div>

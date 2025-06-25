@@ -36,7 +36,7 @@ function createWindow() {
     maxHeight: 780,
     width: 1440,
     maxWidth: 1440,
-    // frame: false,
+    frame: false,
     backgroundColor: "#18181a",
     roundedCorners: true, // enables rounded corners (macOS only)
     transparent: false,
@@ -104,6 +104,10 @@ app.whenReady().then(() => {
   ipcMain.handle("todos:delete", (event, id) => {
     db.deleteTodo(id);
     return { success: true };
+  });
+
+  ipcMain.handle("todos:getByDateRange", (event, start, end) => {
+    return db.getTodosByDateRange(start, end);
   });
 
   // --- IPC handlers for Notes ---

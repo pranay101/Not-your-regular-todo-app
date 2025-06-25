@@ -41,6 +41,11 @@ interface Window {
     invoke(channel: "notes:delete", id: number): Promise<{ success: boolean }>;
     invoke(channel: string, ...args: any[]): Promise<any>;
     invoke(channel: "todos:getByDate", date: string): Promise<any[]>;
+    invoke(
+      channel: "todos:getByDateRange",
+      start: string,
+      end: string
+    ): Promise<any[]>;
   };
 }
 

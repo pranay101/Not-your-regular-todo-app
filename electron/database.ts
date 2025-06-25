@@ -75,7 +75,13 @@ export function getTodoByDate(date: string) {
 
 export function addTodo(
   todo: Omit<
-    { title: string; description: string; status: string; priority: string; date: string },
+    {
+      title: string;
+      description: string;
+      status: string;
+      priority: string;
+      date: string;
+    },
     "id"
   >
 ) {
@@ -94,13 +100,26 @@ export function addTodo(
 
 export function updateTodo(
   id: number,
-  todo: { title: string; description: string; status: string; priority: string; date: string }
+  todo: {
+    title: string;
+    description: string;
+    status: string;
+    priority: string;
+    date: string;
+  }
 ) {
   getDb()
     .prepare(
       "UPDATE todos SET title = ?, description = ?, status = ?, priority = ?, date = ? WHERE id = ?"
     )
-    .run(todo.title, todo.description, todo.status, todo.priority, todo.date, id);
+    .run(
+      todo.title,
+      todo.description,
+      todo.status,
+      todo.priority,
+      todo.date,
+      id
+    );
   return { ...todo, id };
 }
 
@@ -110,6 +129,12 @@ export function updateTodoStatus(id: number, status: string) {
 
 export function deleteTodo(id: number) {
   getDb().prepare("DELETE FROM todos WHERE id = ?").run(id);
+}
+
+export function getTodosByDateRange(start: string, end: string) {
+  return getDb()
+    .prepare("SELECT * FROM todos WHERE date >= ? AND date <= ?")
+    .all(start, end);
 }
 
 // --- NOTES CRUD ---

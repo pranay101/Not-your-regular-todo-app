@@ -6,7 +6,7 @@ import {
   PencilIcon,
   TrashIcon,
 } from "@heroicons/react/24/outline";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Todo } from "../config";
 import { useState } from "react";
 import EditTodoModal from "./EditTodoModal";
@@ -28,6 +28,7 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const [showContextMenu, setShowContextMenu] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showDescription, setShowDescription] = useState(false);
   const [contextMenuPosition, setContextMenuPosition] = useState({
     x: 0,
     y: 0,
@@ -81,13 +82,13 @@ const TodoItem: React.FC<TodoItemProps> = ({
   const getPriorityIcon = (priority: string) => {
     switch (priority.toLowerCase()) {
       case "high":
-        return <ExclamationTriangleIcon className="w-4 h-4 text-primary-red" />;
+        return <ExclamationTriangleIcon className="w-3 h-3 text-primary-red" />;
       case "medium":
-        return <ExclamationTriangleIcon className="w-4 h-4 text-yellow-500" />;
+        return <ExclamationTriangleIcon className="w-3 h-3 text-yellow-500" />;
       case "low":
-        return <CheckCircleIcon className="w-4 h-4 text-green-500" />;
+        return <CheckCircleIcon className="w-3 h-3 text-green-500" />;
       default:
-        return <CheckCircleIcon className="w-4 h-4 text-gray-400" />;
+        return <CheckCircleIcon className="w-3 h-3 text-gray-400" />;
     }
   };
 
@@ -99,19 +100,26 @@ const TodoItem: React.FC<TodoItemProps> = ({
         animate={{ opacity: 1, y: 0 }}
         exit={{ opacity: 0, y: -20 }}
         transition={{ duration: 0.2 }}
-        className="flex items-start gap-2 cursor-pointer group hover:bg-secondary-bg/40 p-2 rounded-sm transition-colors"
+        className="flex items-start gap-2 cursor-pointer group"
         onContextMenu={handleContextMenu}
+        onClick={() => setShowDescription(!showDescription)}
       >
         {isDone ? (
           <div
-            onClick={() => onStatusChange(todo.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatusChange(todo.id);
+            }}
             className="w-6 h-6 rounded-full flex items-center justify-center aspect-square border border-primary-purple"
           >
             <CheckIcon className="w-4 h-4 text-white" />
           </div>
         ) : (
           <div
-            onClick={() => onStatusChange(todo.id)}
+            onClick={(e) => {
+              e.stopPropagation();
+              onStatusChange(todo.id);
+            }}
             className="w-6 h-6 rounded-full flex items-center justify-center aspect-square bg-secondary-bg border border-stroke-secondary"
           />
         )}
@@ -127,17 +135,23 @@ const TodoItem: React.FC<TodoItemProps> = ({
             </p>
             <div className="relative">{getPriorityIcon(todo.priority)}</div>
           </div>
-          {todo.description && (
-            <p
-              className={`text-xs mt-1 ${
-                isDone ? "line-through text-gray-500" : "text-gray-400"
-              }`}
-            >
-              {todo.description.length > 50
-                ? `${todo.description.substring(0, 50)}...`
-                : todo.description}
-            </p>
-          )}
+          <AnimatePresence>
+            {showDescription && todo.description && (
+              <motion.p
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: "auto" }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.2 }}
+                className={`text-xs mt-1 ${
+                  isDone ? "line-through text-gray-500" : "text-gray-400"
+                }`}
+              >
+                {todo.description.length > 50
+                  ? `${todo.description.substring(0, 50)}...`
+                  : todo.description}
+              </motion.p>
+            )}
+          </AnimatePresence>
         </div>
       </motion.div>
 
