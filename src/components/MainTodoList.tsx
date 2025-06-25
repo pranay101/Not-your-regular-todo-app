@@ -1,13 +1,12 @@
 import { CheckCircleIcon, PlusIcon } from "@heroicons/react/24/outline";
 import { AnimatePresence } from "framer-motion";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Todo } from "../config";
 import CreateNewTodoModal from "./CreateNewTodoModal";
 import TodoItem from "./TodoItem";
-import moment from "moment";
 
 interface TodoListColumnProps {
-  id: string;
+  id: "done" | "pending" | "overdue" | "upcoming-important";
   title: string;
   todos: Todo[];
   onStatusChange: (id: number) => void;
@@ -51,6 +50,7 @@ const TodoListColumn: React.FC<TodoListColumnProps> = ({
         <AnimatePresence>
           {todos.map((todo) => (
             <TodoItem
+              id={id}
               key={todo.id}
               todo={todo}
               onStatusChange={onStatusChange}
@@ -101,7 +101,6 @@ const MainTodoList: React.FC<MainTodoListProps> = ({
       );
     } catch (err) {
       console.error("Failed to update todo status:", err);
-      setError("Failed to update todo status. Please try again.");
     }
   };
 

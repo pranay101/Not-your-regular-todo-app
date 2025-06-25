@@ -99,7 +99,7 @@ const ActivityGraph = ({ todos }: ActivityGraphProps) => {
       graphRef.current.scrollLeft = graphRef.current.scrollWidth;
     }
     const today = moment().weekday();
-    const todalBoxes = 51 * 7 + today;
+    const todalBoxes = 51 * 7 + today + 1;
 
     const map = Array.from({ length: todalBoxes }, (_, index) => {
       const date = moment().subtract(index, "days").format("YYYY-MM-DD");
