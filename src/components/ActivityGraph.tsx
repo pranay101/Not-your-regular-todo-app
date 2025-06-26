@@ -30,12 +30,37 @@ function generateMonthLabels(
 
 const WEEK_DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
 
-function getColorClass(count: number): string {
+function calculateActivityThresholds(todos: Todo[]): number[] {
+  // Calculate average tasks per active day
+  const tasksByDay = todos.reduce((acc: {[key: string]: number}, todo) => {
+    if (todo.status === "done") {
+      const date = todo.date;
+      acc[date] = (acc[date] || 0) + 1;
+    }
+    return acc;
+  }, {});
+
+  const activeDays = Object.keys(tasksByDay).length || 1;
+  const totalTasks = Object.values(tasksByDay).reduce((sum, count) => sum + count, 0);
+  const avgTasksPerDay = totalTasks / activeDays;
+
+  // Create thresholds at 0.5x, 1x, 1.5x, 2x, and 2.5x average
+  return [
+    avgTasksPerDay * 0.5,
+    avgTasksPerDay,
+    avgTasksPerDay * 1.5,
+    avgTasksPerDay * 2,
+    avgTasksPerDay * 2.5
+  ];
+}
+
+function getColorClass(count: number, thresholds: number[]): string {
   const border = "border border-[#2a2a2e]";
   if (count === 0) return `border border-[#2a2a2e] bg-[rgb(24,24,28)]`;
-  if (count < 10) return `bg-[#6B3631] ${border}`;
-  if (count < 20) return `bg-[#93463E] ${border}`;
-  if (count < 20) return `bg-[#C15051] ${border}`;
+  if (count < thresholds[0]) return `bg-[#6B3631] ${border}`;
+  if (count < thresholds[1]) return `bg-[#93463E] ${border}`;
+  if (count < thresholds[2]) return `bg-[#C15051] ${border}`;
+  if (count < thresholds[3]) return `bg-[#E86355] ${border}`;
   return `bg-[#E86355] ${border}`;
 }
 
@@ -93,6 +118,7 @@ interface ActivityGraphProps {
 const ActivityGraph = ({ todos }: ActivityGraphProps) => {
   const [activityMap, setActivityMap] = useState<Activity[]>([]);
   const graphRef = useRef<HTMLDivElement>(null);
+  const [activityThresholds, setActivityThresholds] = useState<number[]>([]);
 
   useEffect(() => {
     if (graphRef.current) {
@@ -110,6 +136,7 @@ const ActivityGraph = ({ todos }: ActivityGraphProps) => {
     });
 
     setActivityMap(map.reverse());
+    setActivityThresholds(calculateActivityThresholds(todos));
   }, [todos]);
 
   const monthLabels = generateMonthLabels(STARTING_DAY, WEEKS);
@@ -184,7 +211,7 @@ const ActivityGraph = ({ todos }: ActivityGraphProps) => {
                     <CustomTooltip content={tooltipContent} align={align}>
                       <div
                         className={twMerge(
-                          getColorClass(count.activity),
+                          getColorClass(count.activity, activityThresholds),
                           " text-white aspect-square w-3 h-3 rounded-xs"
                         )}
                       />
@@ -196,16 +223,16 @@ const ActivityGraph = ({ todos }: ActivityGraphProps) => {
           ))}
         </div>
       </div>
-      <div className="flex items-center justify-end text-xs font-medium text-white gap-2 mt-2">
-        <p>No Activity</p>
+      <div id="activity-graph-legend" className="flex items-center justify-end text-xs font-medium text-white gap-2 mt-2">
+        <p>Less</p>
         <div className="flex items-center justify-center gap-[2px]">
           <div className="w-3 h-3 border border-[#2a2a2e] bg-[rgb(24,24,28)] rounded-sm" />
-          <div className="w-3 h-3 border border-[#2a2a2e] bg-[rgb(255,156,154)] rounded-sm" />
-          <div className="w-3 h-3 border border-[#2a2a2e] bg-[rgb(242,84,79)] rounded-sm" />
-          <div className="w-3 h-3 border border-[#2a2a2e] bg-[rgb(213,63,61)] rounded-sm" />
-          <div className="w-3 h-3 border border-[#2a2a2e] bg-[rgb(153,30,28)] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#6B3631] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#93463E] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#C15051] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#E86355] rounded-sm" />
         </div>
-        <p>5+ Activity</p>
+        <p>More</p>
       </div>
     </div>
   );
