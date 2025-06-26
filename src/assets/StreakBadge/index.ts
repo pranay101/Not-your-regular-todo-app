@@ -1,5 +1,5 @@
-import GoldBadge from './GoldBadge.svg';
-import SilverBadge from './SilverBadge';
-import BronzeBadge from './BronzeBadge.svg';
+import GoldBadge from "./GoldBadge";
+import SilverBadge from "./SilverBadge";
+import BronzeBadge from "./BronzeBadge";
 
 export { GoldBadge, SilverBadge, BronzeBadge };
