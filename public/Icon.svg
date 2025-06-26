@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_2" data-name="Layer 2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 147 147">
+  <defs>
+    <style>
+      .cls-1 {
+        fill: #fff;
+        font-family: Montserrat-Bold, Montserrat;
+        font-size: 40.5px;
+        font-weight: 700;
+      }
+
+      .cls-2 {
+        fill: #d63f3d;
+        stroke-width: 0px;
+      }
+    </style>
+  </defs>
+  <g id="Layer_1-2" data-name="Layer 1">
+    <rect class="cls-2" width="147" height="147" rx="24.1" ry="24.1"/>
+    <g>
+      <text class="cls-1" transform="translate(14.17 70.33) scale(1.07 1)"><tspan x="0" y="0">Thu</tspan></text>
+      <text class="cls-1" transform="translate(65.17 108.33) scale(1.07 1)"><tspan x="0" y="0">Du</tspan></text>
+    </g>
+  </g>
+</svg>

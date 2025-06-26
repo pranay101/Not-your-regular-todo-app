@@ -2,6 +2,7 @@
   "name": "not-your-regular-todo-app",
   "private": true,
   "version": "0.0.0",
+  "description": "A beautiful, feature-rich productivity app with todos, notes, and focus tools",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -19,6 +20,7 @@
     "react": "^18.2.0",
     "react-day-picker": "^9.7.0",
     "react-dom": "^18.2.0",
+    "react-fast-marquee": "^1.6.5",
     "react-tippy": "^1.4.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.10"
