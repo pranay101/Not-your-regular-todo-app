@@ -7,12 +7,13 @@
     "dev": "vite",
     "build": "tsc && vite build && electron-builder",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "generate-data": "node scripts/generate-dummy-data.js"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
     "@tailwindcss/vite": "^4.1.10",
-    "better-sqlite3": "^12.0.0",
+    "better-sqlite3": "^12.1.1",
     "framer-motion": "^12.18.1",
     "moment": "^2.30.1",
     "react": "^18.2.0",
