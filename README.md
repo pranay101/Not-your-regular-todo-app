@@ -4,6 +4,10 @@ A beautiful, feature-rich productivity app built with React, TypeScript, and Ele
 
 ![App Screenshot](./AppImages/appImage.png)
 
+## 📥 Download
+
+[Download for Windows](https://github.com/pranay101/Not-your-regular-todo-app/releases/download/1.0.0/Thu.Du-Setup.exe)
+
 ## ✨ Features
 
 ### 📝 Smart Todo Management
@@ -51,7 +55,7 @@ A beautiful, feature-rich productivity app built with React, TypeScript, and Ele
 
 ### 🔧 Technical Features
 
-- **Cross-Platform**: Windows, macOS, and Linux support
+- **Windows Support**: Optimized for Windows OS
 - **Offline-First**: Works without internet connection
 - **Local Storage**: All data stored securely on your device
 - **Performance**: Fast and responsive application
