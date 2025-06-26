@@ -57,7 +57,7 @@ const Header: React.FC<HeaderProps> = ({ loadTodos, isLoading }) => {
         </button>
         <button
           style={{ WebkitAppRegion: "no-drag" } as React.CSSProperties}
-          className="cursor-pointer"
+          className="cursor-pointer hidden"
         >
           <Cog6ToothIcon className="w-4 h-4 text-white" />
         </button>

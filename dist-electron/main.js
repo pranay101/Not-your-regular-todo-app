@@ -14,6 +14,18 @@ function initDatabase() {
   db = new Database(dbPath);
   db.prepare(
     `
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT,
+      onboarding_completed BOOLEAN DEFAULT FALSE,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `
+  ).run();
+  db.prepare(
+    `
     CREATE TABLE IF NOT EXISTS todos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
       title TEXT NOT NULL,
@@ -44,6 +56,44 @@ function getDb() {
   if (!db)
     throw new Error("Database not initialized. Call initDatabase() first.");
   return db;
+}
+function getUser() {
+  return getDb().prepare("SELECT * FROM users LIMIT 1").get();
+}
+function createUser(user) {
+  const stmt = getDb().prepare(
+    "INSERT INTO users (name, email) VALUES (?, ?)"
+  );
+  const info = stmt.run(
+    user.name,
+    user.email || null
+  );
+  return { ...user, id: info.lastInsertRowid };
+}
+function updateUser(id, user) {
+  const updates = [];
+  const values = [];
+  if (user.name !== void 0) {
+    updates.push("name = ?");
+    values.push(user.name);
+  }
+  if (user.email !== void 0) {
+    updates.push("email = ?");
+    values.push(user.email);
+  }
+  if (user.onboarding_completed !== void 0) {
+    updates.push("onboarding_completed = ?");
+    values.push(user.onboarding_completed);
+  }
+  updates.push("updated_at = CURRENT_TIMESTAMP");
+  values.push(id);
+  const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
+  getDb().prepare(query).run(...values);
+  return { ...user, id };
+}
+function checkUserExists() {
+  const user = getUser();
+  return !!user;
 }
 function getAllTodos() {
   return getDb().prepare("SELECT * FROM todos").all();
@@ -188,6 +238,18 @@ app.whenReady().then(() => {
   ipcMain.handle("notes:delete", (event, id) => {
     deleteNote(id);
     return { success: true };
+  });
+  ipcMain.handle("user:get", () => {
+    return getUser();
+  });
+  ipcMain.handle("user:create", (event, userData) => {
+    return createUser(userData);
+  });
+  ipcMain.handle("user:update", (event, id, userData) => {
+    return updateUser(id, userData);
+  });
+  ipcMain.handle("user:exists", () => {
+    return checkUserExists();
   });
 });
 app.on("window-all-closed", () => {

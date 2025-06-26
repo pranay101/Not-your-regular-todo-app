@@ -128,6 +128,23 @@ app.whenReady().then(() => {
     db.deleteNote(id);
     return { success: true };
   });
+
+  // --- IPC handlers for Users ---
+  ipcMain.handle("user:get", () => {
+    return db.getUser();
+  });
+
+  ipcMain.handle("user:create", (event, userData) => {
+    return db.createUser(userData);
+  });
+
+  ipcMain.handle("user:update", (event, id, userData) => {
+    return db.updateUser(id, userData);
+  });
+
+  ipcMain.handle("user:exists", () => {
+    return db.checkUserExists();
+  });
 });
 
 // Quit when all windows are closed, except on macOS. There, it's common

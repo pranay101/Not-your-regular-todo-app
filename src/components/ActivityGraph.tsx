@@ -33,9 +33,9 @@ const WEEK_DAY_LABELS = ["", "Mon", "", "Wed", "", "Fri", ""];
 function getColorClass(count: number): string {
   const border = "border border-[#2a2a2e]";
   if (count === 0) return `border border-[#2a2a2e] bg-[rgb(24,24,28)]`;
-  if (count === 1) return `bg-[#6B3631] ${border}`;
-  if (count === 2) return `bg-[#93463E] ${border}`;
-  if (count === 3 || count === 4) return `bg-[#C15051] ${border}`;
+  if (count < 10) return `bg-[#6B3631] ${border}`;
+  if (count < 20) return `bg-[#93463E] ${border}`;
+  if (count < 20) return `bg-[#C15051] ${border}`;
   return `bg-[#E86355] ${border}`;
 }
 

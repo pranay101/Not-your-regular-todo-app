@@ -21,6 +21,20 @@ export function initDatabase() {
   db = new Database(dbPath);
 
   // Initialize tables if they don't exist
+  // Users table
+  db.prepare(
+    `
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      name TEXT NOT NULL,
+      email TEXT,
+      onboarding_completed BOOLEAN DEFAULT FALSE,
+      created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+      updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    );
+  `
+  ).run();
+
   // Todos table
   db.prepare(
     `
@@ -62,6 +76,65 @@ function getDb() {
   if (!db)
     throw new Error("Database not initialized. Call initDatabase() first.");
   return db;
+}
+
+// --- USERS CRUD ---
+export function getUser() {
+  return getDb().prepare("SELECT * FROM users LIMIT 1").get();
+}
+
+export function createUser(user: {
+  name: string;
+  email?: string;
+}) {
+  const stmt = getDb().prepare(
+    "INSERT INTO users (name, email) VALUES (?, ?)"
+  );
+  const info = stmt.run(
+    user.name,
+    user.email || null,
+  );
+  return { ...user, id: info.lastInsertRowid };
+}
+
+export function updateUser(
+  id: number,
+  user: {
+    name?: string;
+    email?: string;
+    onboarding_completed?: boolean;
+  }
+) {
+  const updates = [];
+  const values = [];
+
+  if (user.name !== undefined) {
+    updates.push("name = ?");
+    values.push(user.name);
+  }
+  if (user.email !== undefined) {
+    updates.push("email = ?");
+    values.push(user.email);
+  }
+  if (user.onboarding_completed !== undefined) {
+    updates.push("onboarding_completed = ?");
+    values.push(user.onboarding_completed);
+  }
+
+  updates.push("updated_at = CURRENT_TIMESTAMP");
+  values.push(id);
+
+  const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
+  getDb()
+    .prepare(query)
+    .run(...values);
+
+  return { ...user, id };
+}
+
+export function checkUserExists() {
+  const user = getUser();
+  return !!user;
 }
 
 // --- TODOS CRUD ---

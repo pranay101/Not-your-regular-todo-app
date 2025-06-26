@@ -9,22 +9,26 @@ import {
   Position,
   QuickNote,
   WorkMode,
+  Onboarding,
 } from "./components";
-import { useState, useCallback, useEffect } from "react";
+import React from "react";
 import { Todo } from "./config";
 import moment from "moment";
 import { LoadingWomen } from "./assets";
 
 function App() {
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [todos, setTodos] = useState<Todo[]>([]);
-  const [yearGraph, setYearGraph] = useState<Todo[]>([]);
-  const [importantTodos, setImportantTodos] = useState<Todo[]>([]);
-  const [overdueTodos, setOverdueTodos] = useState<Todo[]>([]);
+  const [loading, setLoading] = React.useState(true);
+  const [error, setError] = React.useState<string | null>(null);
+  const [todos, setTodos] = React.useState<Todo[]>([]);
+  const [yearGraph, setYearGraph] = React.useState<Todo[]>([]);
+  const [importantTodos, setImportantTodos] = React.useState<Todo[]>([]);
+  const [overdueTodos, setOverdueTodos] = React.useState<Todo[]>([]);
 
   const [showInitialLoadingAnimation, setShowInitialLoadingAnimation] =
-    useState(true);
+    React.useState(true);
+
+  const [showOnboarding, setShowOnboarding] = React.useState(false);
+  const [user, setUser] = React.useState<any>(null);
 
   const loadingMessages = [
     {
@@ -59,7 +63,26 @@ function App() {
   const randomLoadingMessage =
     loadingMessages[Math.floor(Math.random() * loadingMessages.length)];
 
-  const loadTodos = useCallback(async () => {
+  const checkUser = React.useCallback(async () => {
+    try {
+      const userExists = await window.ipcRenderer.invoke("user:exists");
+      if (!userExists) {
+        setShowOnboarding(true);
+        return false;
+      } else {
+        const userData = await window.ipcRenderer.invoke("user:get");
+        setUser(userData);
+        return true;
+      }
+    } catch (error) {
+      console.error("Failed to check user:", error);
+      // If there's an error checking user, show onboarding as fallback
+      setShowOnboarding(true);
+      return false;
+    }
+  }, []);
+
+  const loadTodos = React.useCallback(async () => {
     try {
       const today = moment().format("YYYY-MM-DD");
       setLoading(true);
@@ -74,6 +97,7 @@ function App() {
     } catch (err) {
       console.error("Failed to load todos:", err);
       setError("Failed to load todos. Please try again.");
+      setTodos([]); // Set empty array as fallback
     } finally {
       setLoading(false);
     }
@@ -133,16 +157,34 @@ function App() {
       setOverdueTodos(overdue);
     } catch (error) {
       console.error("Failed to fetch important and overdue todos:", error);
+      setImportantTodos([]);
+      setOverdueTodos([]);
     }
   };
 
-  const completedTodos = todos?.filter((todo) => todo.status === "done") || [];
+  const completedTodos =
+    todos?.filter((todo: Todo) => todo.status === "done") || [];
 
-  useEffect(() => {
-    loadTodos();
-    fetchTodos();
-    fetchImportantAndOverdueTodos();
-  }, [loadTodos]);
+  React.useEffect(() => {
+    const initializeApp = async () => {
+      try {
+        const userExists = await checkUser();
+        if (userExists) {
+          loadTodos();
+          fetchTodos();
+          fetchImportantAndOverdueTodos();
+        }
+      } catch (error) {
+        console.error("Failed to initialize app:", error);
+        // If initialization fails, still try to load todos
+        loadTodos();
+        fetchTodos();
+        fetchImportantAndOverdueTodos();
+      }
+    };
+
+    initializeApp();
+  }, [checkUser, loadTodos]);
 
   const refetchTodos = () => {
     loadTodos();
@@ -150,10 +192,28 @@ function App() {
     fetchImportantAndOverdueTodos();
   };
 
-  useEffect(() => {
+  const handleOnboardingComplete = async () => {
+    try {
+      setShowOnboarding(false);
+      const userData = await window.ipcRenderer.invoke("user:get");
+      setUser(userData);
+      loadTodos();
+      fetchTodos();
+      fetchImportantAndOverdueTodos();
+    } catch (error) {
+      console.error("Failed to complete onboarding:", error);
+      // Even if getting user fails, proceed with app
+      setShowOnboarding(false);
+      loadTodos();
+      fetchTodos();
+      fetchImportantAndOverdueTodos();
+    }
+  };
+
+  React.useEffect(() => {
     setTimeout(() => {
       setShowInitialLoadingAnimation(false);
-    }, 3000);
+    }, 2000);
   }, []);
 
   return (
@@ -173,6 +233,8 @@ function App() {
           </p>
         </div>
       )}
+
+      {showOnboarding && <Onboarding onComplete={handleOnboardingComplete} />}
 
       <main className="grid grid-cols-5 gap-4 h-full p-4">
         <section className="col-span-2 w-full overflow-x-auto h-fit">

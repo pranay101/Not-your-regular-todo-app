@@ -1,3 +1,3 @@
 import LoadingWomen from "./LoadingWomen";
-
-export { LoadingWomen };
+import OnBoarding from "./OnBoarding";
+export { LoadingWomen, OnBoarding };
