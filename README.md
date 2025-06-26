@@ -2,7 +2,7 @@
 
 A beautiful, feature-rich productivity app built with React, TypeScript, and Electron. More than just a todo list - it's your complete productivity companion with notes, calendar integration, activity tracking, and a delightful user experience.
 
-![App Screenshot](./AppImages/appScreenshot.png)
+![App Screenshot](./AppImages/appImage.png)
 
 ## ✨ Features
 
