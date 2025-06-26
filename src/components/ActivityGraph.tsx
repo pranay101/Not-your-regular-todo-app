@@ -199,14 +199,11 @@ const ActivityGraph = memo(({ todos }: { todos: Todo[] }) => {
       <div className="flex items-center justify-end text-xs font-medium text-white gap-2 mt-2">
         <p>Less</p>
         <div className="flex items-center justify-center gap-[2px]">
-          {["[rgb(24,24,28)]", "#6B3631", "#93463E", "#C15051", "#E86355"].map(
-            (color, i) => (
-              <div
-                key={i}
-                className={`w-3 h-3 border border-[#2a2a2e] bg-${color} rounded-sm`}
-              />
-            )
-          )}
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[rgb(24,24,28)] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#6B3631] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#93463E] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#C15051] rounded-sm" />
+          <div className="w-3 h-3 border border-[#2a2a2e] bg-[#E86355] rounded-sm" />
         </div>
         <p>More</p>
       </div>
