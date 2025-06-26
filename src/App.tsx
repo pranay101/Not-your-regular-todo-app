@@ -15,6 +15,7 @@ import React from "react";
 import { Todo } from "./config";
 import moment from "moment";
 import { LoadingWomen } from "./assets";
+import { useEffect } from "react";
 
 function App() {
   const [loading, setLoading] = React.useState(true);
@@ -23,6 +24,7 @@ function App() {
   const [yearGraph, setYearGraph] = React.useState<Todo[]>([]);
   const [importantTodos, setImportantTodos] = React.useState<Todo[]>([]);
   const [overdueTodos, setOverdueTodos] = React.useState<Todo[]>([]);
+  const [isWorkModeActive, setIsWorkModeActive] = React.useState(false);
 
   const [showInitialLoadingAnimation, setShowInitialLoadingAnimation] =
     React.useState(true);
@@ -91,8 +93,6 @@ function App() {
         "todos:getByDate",
         today
       );
-
-      console.log(todosData, "asad");
       setTodos(todosData);
     } catch (err) {
       console.error("Failed to load todos:", err);
@@ -210,7 +210,11 @@ function App() {
     }
   };
 
-  React.useEffect(() => {
+  const handleWorkModeToggle = (active: boolean) => {
+    setIsWorkModeActive(active);
+  };
+
+  useEffect(() => {
     setTimeout(() => {
       setShowInitialLoadingAnimation(false);
     }, 2000);
@@ -241,8 +245,11 @@ function App() {
           <ActivityGraph todos={yearGraph} />
           <div className="flex items-start gap-4 mt-4">
             <Calendar className="flex-1 bg-bg-secondary bg-gray-100" />
-            <Position />
-            <WorkMode />
+            <Position yearActivity={yearGraph} />
+            <WorkMode
+              isWorkMode={isWorkModeActive}
+              onToggle={handleWorkModeToggle}
+            />
           </div>
           <div className="flex items-start gap-4 mt-4">
             <PomodoroToday
