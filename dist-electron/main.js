@@ -1,18 +1,16 @@
-import { app, ipcMain, BrowserWindow } from "electron";
-import { createRequire } from "node:module";
-import { fileURLToPath } from "node:url";
-import path from "node:path";
-import Database from "better-sqlite3";
-const __filename = fileURLToPath(import.meta.url);
-const __dirname$1 = path.dirname(__filename);
-global.__filename = __filename;
-global.__dirname = __dirname$1;
-let db = null;
-function initDatabase() {
-  if (db) return db;
-  const dbPath = app ? path.join(app.getPath("userData"), "app.db") : path.join(__dirname$1, "app.db");
-  db = new Database(dbPath);
-  db.prepare(
+import { app as d, ipcMain as r, BrowserWindow as T } from "electron";
+import { createRequire as _ } from "node:module";
+import { fileURLToPath as p } from "node:url";
+import i from "node:path";
+import h from "better-sqlite3";
+const l = p(import.meta.url), c = i.dirname(l);
+global.__filename = l;
+global.__dirname = c;
+let s = null;
+function N() {
+  if (s) return s;
+  const t = d ? i.join(d.getPath("userData"), "app.db") : i.join(c, "app.db");
+  return s = new h(t), s.prepare(
     `
     CREATE TABLE IF NOT EXISTS users (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -23,8 +21,7 @@ function initDatabase() {
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `
-  ).run();
-  db.prepare(
+  ).run(), s.prepare(
     `
     CREATE TABLE IF NOT EXISTS todos (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -35,8 +32,7 @@ function initDatabase() {
       date TEXT
     );
   `
-  ).run();
-  db.prepare(
+  ).run(), s.prepare(
     `
     CREATE TABLE IF NOT EXISTS notes (
       id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -45,226 +41,129 @@ function initDatabase() {
       updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
     );
   `
-  ).run();
-  const todoCount = db.prepare("SELECT COUNT(*) as count FROM todos").get();
-  if (todoCount.count === 0) {
-    console.log("Database empty");
-  }
-  return db;
+  ).run(), s.prepare("SELECT COUNT(*) as count FROM todos").get().count === 0 && console.log("Database empty"), s;
 }
-function getDb() {
-  if (!db)
+function a() {
+  if (!s)
     throw new Error("Database not initialized. Call initDatabase() first.");
-  return db;
+  return s;
 }
-function getUser() {
-  return getDb().prepare("SELECT * FROM users LIMIT 1").get();
+function R() {
+  return a().prepare("SELECT * FROM users LIMIT 1").get();
 }
-function createUser(user) {
-  const stmt = getDb().prepare(
+function S(t) {
+  const n = a().prepare(
     "INSERT INTO users (name, email) VALUES (?, ?)"
+  ).run(
+    t.name,
+    t.email || null
   );
-  const info = stmt.run(
-    user.name,
-    user.email || null
-  );
-  return { ...user, id: info.lastInsertRowid };
+  return { ...t, id: n.lastInsertRowid };
 }
-function updateUser(id, user) {
-  const updates = [];
-  const values = [];
-  if (user.name !== void 0) {
-    updates.push("name = ?");
-    values.push(user.name);
-  }
-  if (user.email !== void 0) {
-    updates.push("email = ?");
-    values.push(user.email);
-  }
-  if (user.onboarding_completed !== void 0) {
-    updates.push("onboarding_completed = ?");
-    values.push(user.onboarding_completed);
-  }
-  updates.push("updated_at = CURRENT_TIMESTAMP");
-  values.push(id);
-  const query = `UPDATE users SET ${updates.join(", ")} WHERE id = ?`;
-  getDb().prepare(query).run(...values);
-  return { ...user, id };
+function M(t, e) {
+  const n = [], E = [];
+  e.name !== void 0 && (n.push("name = ?"), E.push(e.name)), e.email !== void 0 && (n.push("email = ?"), E.push(e.email)), e.onboarding_completed !== void 0 && (n.push("onboarding_completed = ?"), E.push(e.onboarding_completed)), n.push("updated_at = CURRENT_TIMESTAMP"), E.push(t);
+  const I = `UPDATE users SET ${n.join(", ")} WHERE id = ?`;
+  return a().prepare(I).run(...E), { ...e, id: t };
 }
-function checkUserExists() {
-  const user = getUser();
-  return !!user;
+function U() {
+  return !!R();
 }
-function getAllTodos() {
-  return getDb().prepare("SELECT * FROM todos").all();
+function D() {
+  return a().prepare("SELECT * FROM todos").all();
 }
-function getTodoByDate(date) {
-  return getDb().prepare("SELECT * FROM todos WHERE date = ?").all(date);
+function L(t) {
+  return a().prepare("SELECT * FROM todos WHERE date = ?").all(t);
 }
-function addTodo(todo) {
-  const stmt = getDb().prepare(
+function g(t) {
+  const n = a().prepare(
     "INSERT INTO todos (title, description, status, priority, date) VALUES (?, ?, ?, ?, ?)"
+  ).run(
+    t.title,
+    t.description,
+    t.status,
+    t.priority,
+    t.date
   );
-  const info = stmt.run(
-    todo.title,
-    todo.description,
-    todo.status,
-    todo.priority,
-    todo.date
-  );
-  return { ...todo, id: info.lastInsertRowid };
+  return { ...t, id: n.lastInsertRowid };
 }
-function updateTodo(id, todo) {
-  getDb().prepare(
+function O(t, e) {
+  return a().prepare(
     "UPDATE todos SET title = ?, description = ?, status = ?, priority = ?, date = ? WHERE id = ?"
   ).run(
-    todo.title,
-    todo.description,
-    todo.status,
-    todo.priority,
-    todo.date,
-    id
-  );
-  return { ...todo, id };
+    e.title,
+    e.description,
+    e.status,
+    e.priority,
+    e.date,
+    t
+  ), { ...e, id: t };
 }
-function updateTodoStatus(id, status) {
-  getDb().prepare("UPDATE todos SET status = ? WHERE id = ?").run(status, id);
+function C(t, e) {
+  a().prepare("UPDATE todos SET status = ? WHERE id = ?").run(e, t);
 }
-function deleteTodo(id) {
-  getDb().prepare("DELETE FROM todos WHERE id = ?").run(id);
+function P(t) {
+  a().prepare("DELETE FROM todos WHERE id = ?").run(t);
 }
-function getTodosByDateRange(start, end) {
-  return getDb().prepare("SELECT * FROM todos WHERE date >= ? AND date <= ?").all(start, end);
+function v(t, e) {
+  return a().prepare("SELECT * FROM todos WHERE date >= ? AND date <= ?").all(t, e);
 }
-function getAllNotes() {
-  return getDb().prepare("SELECT * FROM notes").all();
+function w() {
+  return a().prepare("SELECT * FROM notes").all();
 }
-function addNote(content) {
-  const stmt = getDb().prepare("INSERT INTO notes (content) VALUES (?)");
-  const info = stmt.run(content);
-  return { id: info.lastInsertRowid, content };
+function b(t) {
+  return { id: a().prepare("INSERT INTO notes (content) VALUES (?)").run(t).lastInsertRowid, content: t };
 }
-function updateNote(id, content) {
-  getDb().prepare(
+function F(t, e) {
+  a().prepare(
     "UPDATE notes SET content = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?"
-  ).run(content, id);
+  ).run(e, t);
 }
-function deleteNote(id) {
-  getDb().prepare("DELETE FROM notes WHERE id = ?").run(id);
+function y(t) {
+  a().prepare("DELETE FROM notes WHERE id = ?").run(t);
 }
-createRequire(import.meta.url);
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
-process.env.APP_ROOT = path.join(__dirname, "..");
-const VITE_DEV_SERVER_URL = process.env["VITE_DEV_SERVER_URL"];
-const MAIN_DIST = path.join(process.env.APP_ROOT, "dist-electron");
-const RENDERER_DIST = path.join(process.env.APP_ROOT, "dist");
-process.env.VITE_PUBLIC = VITE_DEV_SERVER_URL ? path.join(process.env.APP_ROOT, "public") : RENDERER_DIST;
-let win;
-function createWindow() {
-  win = new BrowserWindow({
-    icon: path.join(process.env.VITE_PUBLIC, "Icon.ico"),
+_(import.meta.url);
+const m = i.dirname(p(import.meta.url));
+process.env.APP_ROOT = i.join(m, "..");
+const u = process.env.VITE_DEV_SERVER_URL, x = i.join(process.env.APP_ROOT, "dist-electron"), f = i.join(process.env.APP_ROOT, "dist");
+process.env.VITE_PUBLIC = u ? i.join(process.env.APP_ROOT, "public") : f;
+let o;
+function A() {
+  o = new T({
+    icon: i.join(process.env.VITE_PUBLIC, "Icon.ico"),
     height: 780,
     maxHeight: 780,
     width: 1440,
     maxWidth: 1440,
-    frame: false,
+    frame: !1,
     backgroundColor: "#18181a",
-    roundedCorners: true,
+    roundedCorners: !0,
     // enables rounded corners (macOS only)
-    transparent: false,
+    transparent: !1,
     webPreferences: {
-      preload: path.join(__dirname, "preload.mjs")
+      preload: i.join(m, "preload.mjs")
     }
-  });
-  win.webContents.on("did-finish-load", () => {
-    win == null ? void 0 : win.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
-  });
-  if (VITE_DEV_SERVER_URL) {
-    win.loadURL(VITE_DEV_SERVER_URL);
-  } else {
-    win.loadFile(path.join(RENDERER_DIST, "index.html"));
-  }
+  }), o.webContents.on("did-finish-load", () => {
+    o == null || o.webContents.send("main-process-message", (/* @__PURE__ */ new Date()).toLocaleString());
+  }), u ? o.loadURL(u) : o.loadFile(i.join(f, "index.html"));
 }
-ipcMain.on("minimize-window", () => {
-  if (win) {
-    win.minimize();
-  }
+r.on("minimize-window", () => {
+  o && o.minimize();
 });
-ipcMain.on("maximize-window", () => {
-  if (win) {
-    if (win.isMaximized()) {
-      win.unmaximize();
-    } else {
-      win.maximize();
-    }
-  }
+r.on("maximize-window", () => {
+  o && (o.isMaximized() ? o.unmaximize() : o.maximize());
 });
-app.whenReady().then(() => {
-  initDatabase();
-  createWindow();
-  ipcMain.handle("todos:getAll", () => {
-    return getAllTodos();
-  });
-  ipcMain.handle("todos:getByDate", (event, date) => {
-    return getTodoByDate(date);
-  });
-  ipcMain.handle("todos:add", (event, todo) => {
-    return addTodo(todo);
-  });
-  ipcMain.handle("todos:update", (event, id, todo) => {
-    return updateTodo(id, todo);
-  });
-  ipcMain.handle("todos:updateStatus", (event, id, status) => {
-    updateTodoStatus(id, status);
-    return { success: true };
-  });
-  ipcMain.handle("todos:delete", (event, id) => {
-    deleteTodo(id);
-    return { success: true };
-  });
-  ipcMain.handle("todos:getByDateRange", (event, start, end) => {
-    return getTodosByDateRange(start, end);
-  });
-  ipcMain.handle("notes:getAll", () => {
-    return getAllNotes();
-  });
-  ipcMain.handle("notes:add", (event, content) => {
-    return addNote(content);
-  });
-  ipcMain.handle("notes:update", (event, id, content) => {
-    updateNote(id, content);
-    return { success: true };
-  });
-  ipcMain.handle("notes:delete", (event, id) => {
-    deleteNote(id);
-    return { success: true };
-  });
-  ipcMain.handle("user:get", () => {
-    return getUser();
-  });
-  ipcMain.handle("user:create", (event, userData) => {
-    return createUser(userData);
-  });
-  ipcMain.handle("user:update", (event, id, userData) => {
-    return updateUser(id, userData);
-  });
-  ipcMain.handle("user:exists", () => {
-    return checkUserExists();
-  });
+d.whenReady().then(() => {
+  N(), A(), r.handle("todos:getAll", () => D()), r.handle("todos:getByDate", (t, e) => L(e)), r.handle("todos:add", (t, e) => g(e)), r.handle("todos:update", (t, e, n) => O(e, n)), r.handle("todos:updateStatus", (t, e, n) => (C(e, n), { success: !0 })), r.handle("todos:delete", (t, e) => (P(e), { success: !0 })), r.handle("todos:getByDateRange", (t, e, n) => v(e, n)), r.handle("notes:getAll", () => w()), r.handle("notes:add", (t, e) => b(e)), r.handle("notes:update", (t, e, n) => (F(e, n), { success: !0 })), r.handle("notes:delete", (t, e) => (y(e), { success: !0 })), r.handle("user:get", () => R()), r.handle("user:create", (t, e) => S(e)), r.handle("user:update", (t, e, n) => M(e, n)), r.handle("user:exists", () => U());
 });
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-    win = null;
-  }
+d.on("window-all-closed", () => {
+  process.platform !== "darwin" && (d.quit(), o = null);
 });
-app.on("activate", () => {
-  if (BrowserWindow.getAllWindows().length === 0) {
-    createWindow();
-  }
+d.on("activate", () => {
+  T.getAllWindows().length === 0 && A();
 });
 export {
-  MAIN_DIST,
-  RENDERER_DIST,
-  VITE_DEV_SERVER_URL
+  x as MAIN_DIST,
+  f as RENDERER_DIST,
+  u as VITE_DEV_SERVER_URL
 };

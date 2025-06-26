@@ -3,15 +3,62 @@ import {
   SpeakerWaveIcon,
   SpeakerXMarkIcon,
   SunIcon,
+  PlayIcon,
+  PauseIcon,
 } from "@heroicons/react/24/outline";
 import { motion } from "framer-motion";
-import React from "react";
-import Marquee from "react-fast-marquee";
+import React, { useState, useRef, useEffect } from "react";
 
 interface WorkModeProps {
   isWorkMode: boolean;
   onToggle: (active: boolean) => void;
 }
+
+// Custom Marquee Component
+const CustomMarquee: React.FC<{
+  children: React.ReactNode;
+  speed?: number;
+}> = ({ children, speed = 30 }) => {
+  const [isHovered, setIsHovered] = useState(false);
+  const containerRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    const content = contentRef.current;
+
+    if (!container || !content) return;
+
+    const animate = () => {
+      if (isHovered) return;
+
+      if (content.offsetLeft <= -content.offsetWidth) {
+        content.style.left = container.offsetWidth + "px";
+      } else {
+        content.style.left = content.offsetLeft - speed / 60 + "px";
+      }
+
+      requestAnimationFrame(animate);
+    };
+
+    const animationId = requestAnimationFrame(animate);
+
+    return () => cancelAnimationFrame(animationId);
+  }, [isHovered, speed]);
+
+  return (
+    <div
+      ref={containerRef}
+      className="overflow-hidden whitespace-nowrap"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
+      <div ref={contentRef} className="inline-block" style={{ left: "100%" }}>
+        {children}
+      </div>
+    </div>
+  );
+};
 
 const WorkMode = ({ isWorkMode, onToggle }: WorkModeProps) => {
   const [isPlaying, setIsPlaying] = React.useState(false);
@@ -179,7 +226,7 @@ const WorkMode = ({ isWorkMode, onToggle }: WorkModeProps) => {
       </div>
 
       <div className="flex items-center justify-center gap-2">
-        <Marquee speed={30}>
+        <CustomMarquee speed={30}>
           <div className="w-full overflow-hidden whitespace-nowrap">
             {isPlaying && (
               <div className="animate-marquee inline-block">
@@ -189,12 +236,12 @@ const WorkMode = ({ isWorkMode, onToggle }: WorkModeProps) => {
               </div>
             )}
           </div>
-        </Marquee>
+        </CustomMarquee>
         <button onClick={toggleMusic}>
           {isPlaying ? (
-            <SpeakerXMarkIcon className="w-6 h-6 text-text-primary bg-secondary-bg rounded-full p-1" />
+            <PauseIcon className="w-6 h-6 text-text-primary bg-secondary-bg rounded-full p-1" />
           ) : (
-            <SpeakerWaveIcon className="w-6 h-6 text-text-primary bg-secondary-bg rounded-full p-1" />
+            <PlayIcon className="w-6 h-6 text-text-primary bg-secondary-bg rounded-full p-1" />
           )}
         </button>
       </div>

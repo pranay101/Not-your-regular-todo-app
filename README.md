@@ -238,9 +238,9 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 If you have any questions or need help, please:
 
-1. Check the [Issues](https://github.com/yourusername/not-your-regular-todo-app/issues) page
+1. Check the [Issues](https://github.com/pranay101/not-your-regular-todo-app/issues) page
 2. Create a new issue if your problem isn't already addressed
-3. Join our [Discussions](https://github.com/yourusername/not-your-regular-todo-app/discussions) for general questions
+3. Join our [Discussions](https://github.com/pranay101/not-your-regular-todo-app/discussions) for general questions
 
 ---
 

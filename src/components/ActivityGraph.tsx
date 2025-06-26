@@ -1,13 +1,8 @@
 import { ChartPieIcon } from "@heroicons/react/24/outline";
 import moment from "moment";
-import React from "react";
+import React, { useMemo, useEffect, memo, useRef, useState } from "react";
 import { twMerge } from "tailwind-merge";
 import { Todo } from "../config";
-import { useMemo } from "react";
-import { useEffect } from "react";
-import { memo } from "react";
-import { useRef } from "react";
-import { useState } from "react";
 
 const WEEKS = 52;
 const DAYS = 7;

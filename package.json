@@ -1,12 +1,17 @@
 {
-  "name": "not-your-regular-todo-app",
+  "name": "thudu1.1",
   "private": true,
   "version": "0.0.0",
   "description": "A beautiful, feature-rich productivity app with todos, notes, and focus tools",
   "type": "module",
+  "author": "Thu Du",
+  "license": "MIT",
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build && electron-builder",
+    "build": "vite build && electron-builder",
+    "build:web": "vite build",
+    "build:electron": "electron-builder",
+    "build:exe": "vite build && electron-builder --win",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0",
     "preview": "vite preview",
     "generate-data": "node scripts/generate-dummy-data.js"
@@ -20,8 +25,6 @@
     "react": "^18.2.0",
     "react-day-picker": "^9.7.0",
     "react-dom": "^18.2.0",
-    "react-fast-marquee": "^1.6.5",
-    "react-tippy": "^1.4.0",
     "tailwind-merge": "^3.3.1",
     "tailwindcss": "^4.1.10"
   },
@@ -37,7 +40,6 @@
     "eslint": "^8.57.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.5",
-    "typescript": "^5.2.2",
     "vite": "^5.1.6",
     "vite-plugin-electron": "^0.28.6",
     "vite-plugin-electron-renderer": "^0.14.5"
